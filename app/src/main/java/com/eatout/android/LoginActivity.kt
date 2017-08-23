@@ -1,15 +1,13 @@
 package com.eatout.android
 
 import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.util.Log
+import android.support.v7.app.AppCompatActivity
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import kotlin.jvm.javaClass
 
 class LoginActivity : AppCompatActivity() {
 
@@ -34,7 +32,8 @@ class LoginActivity : AppCompatActivity() {
         })
 
         _loginButton.setOnClickListener({
-            Toast.makeText(this, "TODO Implement Login function", Toast.LENGTH_SHORT).show()
+            startActivity(Intent(this, HomeActivity::class.java))
+            finish()
         })
 
 

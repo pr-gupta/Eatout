@@ -9,4 +9,11 @@
     <string name="et_confirm_password_hint">Confirm Password</string>
     <string name="btn_create_account_text">Create Account</string>
     <string name="tv_already_a_member_login_text">Already a member? Login</string>
+    <string name="title_activity_home">Home</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="nav_categories_title">Categories</string>
 </resources>
