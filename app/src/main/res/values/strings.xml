@@ -107,4 +107,5 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="home_settings">Settings</string>
+    <string name="et_enter_location">Enter Location</string>
 </resources>
