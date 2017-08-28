@@ -8,13 +8,15 @@ import java.util.*
 
 /**
  * Created by prashant.gup on 23/08/17.
+ *
  */
-class PropertyUtil private constructor(private val _context: Context) {
-    private var _properties: Properties = Properties()
+object PropertyUtil {
+    private val _properties: Properties = Properties()
 
-    init {
-        _properties.load(_context.assets.open("private.properties"))
+    fun init(context: Context) {
+        _properties.load(context.assets.open("private.properties"))
     }
+
 
     fun getProperty(key: String):String = _properties.getProperty(key)
 }

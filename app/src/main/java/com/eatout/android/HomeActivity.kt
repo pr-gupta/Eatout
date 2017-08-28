@@ -1,85 +1,91 @@
 package com.eatout.android
 
-import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
-import android.view.View
-import android.support.design.widget.NavigationView
-import android.support.v4.view.GravityCompat
-import android.support.v4.widget.DrawerLayout
-import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
+import android.os.Bundle
+import android.os.Handler
+import android.view.Window
 import android.support.v7.widget.Toolbar
-import android.view.Menu
-import android.view.MenuItem
+import android.util.Log
+import android.view.View
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.TextView
+import com.eatout.android.util.zomato.common.CategoriesController
+import com.eatout.android.util.zomato.events.GetCategoryCompletionEvent
+import fr.castorflex.android.smoothprogressbar.SmoothProgressBar
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import android.util.TypedValue
 
-class HomeActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+
+
+
+class HomeActivity : AppCompatActivity() {
+
+    private val TAG = HomeActivity::class.java.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         setContentView(R.layout.activity_home)
-        val toolbar = findViewById(R.id.toolbar) as Toolbar
-        setSupportActionBar(toolbar)
 
-
-        val drawer = findViewById(R.id.drawer_layout) as DrawerLayout
-        val toggle = ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-        drawer.setDrawerListener(toggle)
-        toggle.syncState()
-
-        val navigationView = findViewById(R.id.nav_view) as NavigationView
-        navigationView.setNavigationItemSelectedListener(this)
+        setupToolBar()
+        fetchCategories()
     }
 
-    override fun onBackPressed() {
-        val drawer = findViewById(R.id.drawer_layout) as DrawerLayout
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START)
-        } else {
-            super.onBackPressed()
-        }
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        menuInflater.inflate(R.menu.home, menu)
-        return true
+    private fun setupToolBar() {
+        val toolBar = findViewById(R.id.toolbar3) as Toolbar
+        toolBar.title = "Toolbar"
+        toolBar.inflateMenu(R.menu.menu_main)
+
+        toolBar.setOnMenuItemClickListener({ item ->
+            if (item.itemId == R.id.item1) {
+
+            }
+            false
+        })
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        val id = item.itemId
-
-
-        return if (id == R.id.action_settings) {
-            true
-        } else super.onOptionsItemSelected(item)
-
+    private fun fetchCategories() {
+        Log.v(TAG, "In fetch Categories")
+        CategoriesController.getCategories()
+        (findViewById(R.id.pb_category_loading) as SmoothProgressBar).progressiveStart()
     }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        // Handle navigation view item clicks here.
-        val id = item.itemId
+    @Subscribe
+    fun onCompletionGetCategories(getCategoryCompletionEvent: GetCategoryCompletionEvent) {
+        Log.v(TAG, getCategoryCompletionEvent._categoriesList.toString())
 
-        if (id == R.id.nav_categories) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
 
-        } else if (id == R.id.nav_slideshow) {
 
-        } else if (id == R.id.nav_manage) {
+        Handler().postDelayed({
+            (findViewById(R.id.pb_category_loading) as SmoothProgressBar).progressiveStop()
+            val layout = findViewById(R.id.ll_category_list) as LinearLayout
 
-        } else if (id == R.id.nav_share) {
+            for((categoryItem) in getCategoryCompletionEvent._categoriesList._categories) {
+                val buttonView = Button(this)
+                buttonView.text = categoryItem._name
 
-        } else if (id == R.id.nav_send) {
+                var px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14f, resources.displayMetrics)
+                var ipx = px.toInt()
 
-        }
+                buttonView.setPadding(ipx, ipx, ipx, ipx)
+                Log.v(TAG, "CategoryItem name is ${categoryItem._name}")
+                layout.addView(buttonView)
+            }
 
-        val drawer = findViewById(R.id.drawer_layout) as DrawerLayout
-        drawer.closeDrawer(GravityCompat.START)
-        return true
+            Handler().postDelayed({findViewById(R.id.hsv_category_list).visibility = View.VISIBLE}, 100)
+        }, 500)
+    }
+
+    override fun onStop() {
+        EventBus.getDefault().unregister(this)
+        super.onStop()
     }
 }

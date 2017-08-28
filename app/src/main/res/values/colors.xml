@@ -4,4 +4,13 @@
     <color name="colorPrimaryDark">#bf360c</color>
     <color name="colorAccent">#e9401f</color>
     <color name="primaryOrange">#ff6f00</color>
+
+    <integer-array name="gplus_colors">
+        <item>@color/colorPrimaryDark</item>
+        <item>@color/colorAccent</item>
+        <item>@color/colorPrimary</item>
+        <item>@color/primaryOrange</item>
+    </integer-array>
+
+
 </resources>
