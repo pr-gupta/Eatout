@@ -9,17 +9,17 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.Window
+import android.widget.*
 import com.eatout.android.util.GPSUtil
-import com.eatout.android.util.zomato.common.CategoriesController
+import com.eatout.android.util.zomato.beans.restaurant.search.SearchFilter
+import com.eatout.android.util.zomato.controller.CategoriesController
+import com.eatout.android.util.zomato.controller.SearchRestaurantsController
 import com.eatout.android.util.zomato.events.GetCategoryCompletionEvent
 import com.eatout.android.util.zomato.events.LocationUpdateEvent
 import com.wang.avi.AVLoadingIndicatorView
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import android.location.Geocoder
-import android.text.Editable
-import android.widget.*
 
 
 class HomeActivity : AppCompatActivity() {
@@ -30,6 +30,8 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var _locationInput: EditText
     private lateinit var _categoryLoadingProgressBar: SmoothProgressBar
     private lateinit var _categoryListHorizontalScrollView: HorizontalScrollView
+    private var isRestaurantSearchNeeded = true
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -69,13 +71,21 @@ class HomeActivity : AppCompatActivity() {
         val latitude = location.latitude
         val longitude = location.longitude
 
-        Log.v(TAG, "onCompleteFetchGPSLocation() - ($latitude, $latitude) - [${locationUpdateEvent._cityName}]")
+        Log.v(TAG, "onCompleteFetchGPSLocation() - ($latitude, $longitude) - [${locationUpdateEvent._cityName}]")
 
         _locationInput.setText(locationUpdateEvent._cityName)
         _locationInput.setHorizontallyScrolling(true)
         _avGPSLoading.hide()
         _gpsButton.visibility = View.VISIBLE
         _gpsButton.setBackgroundResource(R.drawable.ic_gps_fixed_black_24dp)
+
+        if(isRestaurantSearchNeeded) {
+            val searchFilter = SearchFilter()
+            searchFilter.latitude = latitude
+            searchFilter.longitude = longitude
+
+            SearchRestaurantsController.searchRestaurants(this, searchFilter)
+        }
     }
 
     private fun setupToolBar() {

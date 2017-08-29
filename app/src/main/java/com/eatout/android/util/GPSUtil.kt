@@ -14,6 +14,7 @@ import java.util.*
 import android.content.pm.PackageManager
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.PermissionChecker.checkCallingOrSelfPermission
+import com.google.android.gms.location.LocationServices
 import com.google.maps.GeoApiContext
 import com.google.maps.GeocodingApi
 import com.google.maps.PendingResult
@@ -38,7 +39,7 @@ class GPSUtil(private val _context:Context){
 
         if(checkLocationPermission()) {
             if(getGpsStatus()) {
-                (_context.getSystemService(Context.LOCATION_SERVICE) as LocationManager).requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 10f, CustomLocationListener(_context))
+                getGPSLocation()
             }
             else {
                 Log.v(TAG, "GPS Not Enabled")
@@ -47,12 +48,21 @@ class GPSUtil(private val _context:Context){
         else {
             Log.w(TAG, "Location permission not granted. Asking User to provide permission")
             ActivityCompat.requestPermissions(_context as Activity , arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
-
         }
 
     }
 
+    private fun getGPSLocation() {
+        val locationManger = _context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val location = locationManger.getLastKnownLocation(locationManger.getBestProvider(Criteria(), true))
 
+//        if(location != null) {
+//            Log.i(TAG, "Found last known location of user")
+//            GoogleReverseGeocoder.reverseGeoEncode(_context, location)
+//        }
+            Log.i(TAG, "Registering for newer location updates")
+            (_context.getSystemService(Context.LOCATION_SERVICE) as LocationManager).requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 0.1f, CustomLocationListener(_context))
+    }
 
     private fun getGpsStatus(): Boolean =
             (_context.getSystemService(Context.LOCATION_SERVICE) as LocationManager).isProviderEnabled(LocationManager.GPS_PROVIDER)
@@ -62,23 +72,8 @@ class GPSUtil(private val _context:Context){
         private val TAG = CustomLocationListener::class.java.simpleName
 
         override fun onLocationChanged(loc: Location?) {
-            Log.i(TAG, loc.toString())
-            if(loc != null) {
-                val geoAPIContext = GeoApiContext.Builder().apiKey(PropertyUtil.getProperty("googleAPIKey")).build()
-
-                val geoCodingResult = GeocodingApi.reverseGeocode(geoAPIContext, LatLng(loc.latitude, loc.longitude)).setCallback(object : PendingResult.Callback<Array<GeocodingResult>> {
-                    override fun onResult(result: Array<GeocodingResult>) {
-                        (_context as Activity).runOnUiThread { EventBus.getDefault().post(LocationUpdateEvent(loc, result[0].formattedAddress)) }
-                    }
-
-                    override fun onFailure(e: Throwable) {
-                        Log.e(TAG, "Failed to get Location from google reverse geocode")
-                        e.printStackTrace()
-                    }
-                })
-
-
-            }
+            Log.i(TAG, "Location Changed - " + loc.toString())
+            GoogleReverseGeocoder.reverseGeoEncode(_context, loc)
         }
 
         override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {

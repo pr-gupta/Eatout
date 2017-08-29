@@ -1,4 +1,4 @@
-package com.eatout.android.util.zomato.beans
+package com.eatout.android.util.zomato.beans.common.categories
 
 import android.support.annotation.IntegerRes
 import com.google.gson.annotations.Expose

@@ -1,9 +1,9 @@
-package com.eatout.android.util.zomato.common
+package com.eatout.android.util.zomato.controller
 
 import android.util.Log
 import com.eatout.android.util.PropertyUtil
 import com.eatout.android.util.zomato.ZomatoAPI
-import com.eatout.android.util.zomato.beans.CategoriesList
+import com.eatout.android.util.zomato.beans.common.categories.CategoriesList
 import com.eatout.android.util.zomato.beans.URLS
 import com.eatout.android.util.zomato.events.GetCategoryCompletionEvent
 import com.google.gson.GsonBuilder
