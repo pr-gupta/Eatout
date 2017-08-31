@@ -27,7 +27,8 @@
             android:label="Create Account" />
         <activity
             android:name=".HomeActivity"
-            android:label="@string/title_activity_home"/>
+            android:label="@string/title_activity_home"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

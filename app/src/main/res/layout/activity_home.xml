@@ -145,13 +145,14 @@
             android:orientation="horizontal" >
         </LinearLayout>
     </HorizontalScrollView>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/restaurant_list"
+    <fragment
         android:layout_width="match_parent"
         android:layout_height="550dp"
         android:layout_marginTop="50dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:id="@+id/restaurant_list_fragment"
+        android:name="com.eatout.android.fragment.RestaurantListFragment"/>
+
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
@@ -162,5 +163,14 @@
         app:borderWidth="0dp"
         app:layout_anchor="@id/my_appbar_container"
         app:layout_anchorGravity="bottom|right|end" />
+
+    <com.wang.avi.AVLoadingIndicatorView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        app:indicatorName="LineScaleIndicator"
+        android:id="@+id/av_restaurant_loading"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        app:indicatorColor="@color/colorPrimary"/>
 
 </android.support.design.widget.CoordinatorLayout>

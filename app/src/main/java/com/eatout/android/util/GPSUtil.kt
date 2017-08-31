@@ -3,23 +3,14 @@ package com.eatout.android.util
 import android.Manifest
 import android.app.Activity
 import android.content.Context
-import android.location.*
-import android.os.Bundle
-import android.util.Log
-import android.view.View
-import com.eatout.android.util.zomato.events.LocationUpdateEvent
-import org.greenrobot.eventbus.EventBus
-import java.io.IOException
-import java.util.*
 import android.content.pm.PackageManager
+import android.location.Criteria
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
+import android.os.Bundle
 import android.support.v4.app.ActivityCompat
-import android.support.v4.content.PermissionChecker.checkCallingOrSelfPermission
-import com.google.android.gms.location.LocationServices
-import com.google.maps.GeoApiContext
-import com.google.maps.GeocodingApi
-import com.google.maps.PendingResult
-import com.google.maps.model.GeocodingResult
-import com.google.maps.model.LatLng
+import android.util.Log
 
 
 /**
@@ -36,13 +27,15 @@ class GPSUtil(private val _context:Context){
     }
 
     fun fetchGPSLocation() {
-
+        Log.i(TAG, "Checking Location Permissions")
         if(checkLocationPermission()) {
+            Log.i(TAG, "Location Permission Granted")
             if(getGpsStatus()) {
+                Log.i(TAG, "GPS is enabled")
                 getGPSLocation()
             }
             else {
-                Log.v(TAG, "GPS Not Enabled")
+                Log.w(TAG, "GPS Not Enabled")
             }
         }
         else {
@@ -60,8 +53,9 @@ class GPSUtil(private val _context:Context){
 //            Log.i(TAG, "Found last known location of user")
 //            GoogleReverseGeocoder.reverseGeoEncode(_context, location)
 //        }
-            Log.i(TAG, "Registering for newer location updates")
-            (_context.getSystemService(Context.LOCATION_SERVICE) as LocationManager).requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 0.1f, CustomLocationListener(_context))
+        Log.i(TAG, "Registering for newer location updates")
+        (_context.getSystemService(Context.LOCATION_SERVICE) as LocationManager).requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0.0f, CustomLocationListener(_context))
+        (_context.getSystemService(Context.LOCATION_SERVICE) as LocationManager).requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0.0f, CustomLocationListener(_context))
     }
 
     private fun getGpsStatus(): Boolean =

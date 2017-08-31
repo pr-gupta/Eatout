@@ -1,6 +1,8 @@
 package com.eatout.android
 
+import android.app.Fragment
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
@@ -10,27 +12,31 @@ import android.util.TypedValue
 import android.view.View
 import android.view.Window
 import android.widget.*
+import com.eatout.android.fragment.RestaurantListFragment
 import com.eatout.android.util.GPSUtil
 import com.eatout.android.util.zomato.beans.restaurant.search.SearchFilter
 import com.eatout.android.util.zomato.controller.CategoriesController
 import com.eatout.android.util.zomato.controller.SearchRestaurantsController
 import com.eatout.android.util.zomato.events.GetCategoryCompletionEvent
 import com.eatout.android.util.zomato.events.LocationUpdateEvent
+import com.eatout.android.util.zomato.events.SearchRestaurantCompletionEvent
 import com.wang.avi.AVLoadingIndicatorView
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 
-class HomeActivity : AppCompatActivity() {
+class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnFragmentInteractionListener {
 
     private val TAG = HomeActivity::class.java.simpleName
     private lateinit var _gpsButton: ImageButton
     private lateinit var _avGPSLoading: AVLoadingIndicatorView
+    private lateinit var _avRestaurantLoading: AVLoadingIndicatorView
     private lateinit var _locationInput: EditText
     private lateinit var _categoryLoadingProgressBar: SmoothProgressBar
     private lateinit var _categoryListHorizontalScrollView: HorizontalScrollView
     private var isRestaurantSearchNeeded = true
+    private var _restaurantListFragment: RestaurantListFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,6 +46,8 @@ class HomeActivity : AppCompatActivity() {
 
         _gpsButton = findViewById(R.id.gps_button) as ImageButton
         _avGPSLoading = findViewById(R.id.av_gps_loading) as AVLoadingIndicatorView
+        _avRestaurantLoading = findViewById(R.id.av_restaurant_loading) as AVLoadingIndicatorView
+
         _locationInput = findViewById(R.id.et_location_input) as EditText
         _categoryLoadingProgressBar = findViewById(R.id.pb_category_loading) as SmoothProgressBar
         _categoryListHorizontalScrollView = findViewById(R.id.hsv_category_list) as HorizontalScrollView
@@ -85,7 +93,15 @@ class HomeActivity : AppCompatActivity() {
             searchFilter.longitude = longitude
 
             SearchRestaurantsController.searchRestaurants(this, searchFilter)
+            _avRestaurantLoading.show()
         }
+    }
+
+    @Subscribe
+    fun onCompleteFetchRestaurantList(searchRestaurantCompletionEvent: SearchRestaurantCompletionEvent) {
+        _avRestaurantLoading.hide()
+        _restaurantListFragment =  fragmentManager.findFragmentById(R.id.restaurant_list_fragment) as RestaurantListFragment?
+
     }
 
     private fun setupToolBar() {
@@ -155,5 +171,9 @@ class HomeActivity : AppCompatActivity() {
     override fun onStop() {
         EventBus.getDefault().unregister(this)
         super.onStop()
+    }
+
+    override fun onFragmentInteraction(uri: Uri) {
+
     }
 }

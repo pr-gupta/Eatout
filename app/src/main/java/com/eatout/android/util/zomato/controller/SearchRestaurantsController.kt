@@ -7,7 +7,9 @@ import com.eatout.android.util.PropertyUtil
 import com.eatout.android.util.zomato.ZomatoAPI
 import com.eatout.android.util.zomato.beans.URLS
 import com.eatout.android.util.zomato.beans.restaurant.search.SearchResult
+import com.eatout.android.util.zomato.events.SearchRestaurantCompletionEvent
 import com.google.gson.GsonBuilder
+import org.greenrobot.eventbus.EventBus
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -47,7 +49,12 @@ object SearchRestaurantsController : Callback<SearchResult> {
     }
 
     override fun onResponse(call: Call<SearchResult>?, response: Response<SearchResult>?) {
-        Log.v(TAG, "In response with data as ${response!!.body().toString()}")
+        if(response != null) {
+            Log.v(TAG, "In response with data as ${response.body().toString()}")
+            EventBus.getDefault().post(SearchRestaurantCompletionEvent(response.body() as SearchResult))
+        } else {
+            Log.w(TAG, "null response received from Search Restaurant request")
+        }
     }
 
 }
