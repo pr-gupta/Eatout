@@ -11,17 +11,17 @@ import com.google.gson.annotations.SerializedName
 data class SearchResult(
         @SerializedName("results_found")
         @Expose
-        var resultsFound: Int,
+        var resultsFound: Int = 0,
         
         @SerializedName("results_start")
         @Expose
-        var resultsStart: Int,
+        var resultsStart: Int = 0,
         
         @SerializedName("results_shown")
         @Expose
-        var resultsShown: Int,
+        var resultsShown: Int = 0,
         
         @SerializedName("restaurants")
         @Expose
-        var restaurants: List<Restaurant>
+        var restaurants: MutableList<Restaurant> = mutableListOf()
 ) 

@@ -20,6 +20,8 @@ import com.eatout.android.util.zomato.controller.SearchRestaurantsController
 import com.eatout.android.util.zomato.events.GetCategoryCompletionEvent
 import com.eatout.android.util.zomato.events.LocationUpdateEvent
 import com.eatout.android.util.zomato.events.SearchRestaurantCompletionEvent
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.wang.avi.AVLoadingIndicatorView
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar
 import org.greenrobot.eventbus.EventBus
@@ -42,8 +44,13 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnFragmentInter
         super.onCreate(savedInstanceState)
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        setContentView(R.layout.activity_home)
+        Log.e(TAG, "E1")
+//
+//        _restaurantListFragment = RestaurantListFragment()
+//        fragmentManager.beginTransaction().add(_restaurantListFragment, "RestaurantListFragment").commit()
 
+        setContentView(R.layout.activity_home)
+        Log.e(TAG, "E2")
         _gpsButton = findViewById(R.id.gps_button) as ImageButton
         _avGPSLoading = findViewById(R.id.av_gps_loading) as AVLoadingIndicatorView
         _avRestaurantLoading = findViewById(R.id.av_restaurant_loading) as AVLoadingIndicatorView
@@ -52,11 +59,17 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnFragmentInter
         _categoryLoadingProgressBar = findViewById(R.id.pb_category_loading) as SmoothProgressBar
         _categoryListHorizontalScrollView = findViewById(R.id.hsv_category_list) as HorizontalScrollView
 
+        _locationInput.clearFocus()
         setupToolBar()
         fetchCategories()
         setUpGPS()
     }
 
+    override fun onAttachFragment(fragment: Fragment?) {
+        super.onAttachFragment(fragment)
+        if(fragment is RestaurantListFragment)
+            _restaurantListFragment = fragment
+    }
 
     override fun onStart() {
         super.onStart()
@@ -100,9 +113,13 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnFragmentInter
     @Subscribe
     fun onCompleteFetchRestaurantList(searchRestaurantCompletionEvent: SearchRestaurantCompletionEvent) {
         _avRestaurantLoading.hide()
-        _restaurantListFragment =  fragmentManager.findFragmentById(R.id.restaurant_list_fragment) as RestaurantListFragment?
+        //_restaurantListFragment = RestaurantListFragment.newInstance(Gson().toJson(searchRestaurantCompletionEvent._searchResult))
+        _restaurantListFragment!!.getDataFromActivity(searchRestaurantCompletionEvent._searchResult)
+        Log.i(TAG, "Restaurant fetch list complete")
+
 
     }
+
 
     private fun setupToolBar() {
         val toolBar = findViewById(R.id.toolbar3) as Toolbar

@@ -147,22 +147,13 @@
     </HorizontalScrollView>
     <fragment
         android:layout_width="match_parent"
-        android:layout_height="550dp"
+        android:layout_height="match_parent"
         android:layout_marginTop="50dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         android:id="@+id/restaurant_list_fragment"
-        android:name="com.eatout.android.fragment.RestaurantListFragment"/>
+        android:name="com.eatout.android.fragment.RestaurantListFragment"
+        tools:layout="@layout/fragment_restaurant_list" />
 
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:src="@drawable/filter"
-        app:borderWidth="0dp"
-        app:layout_anchor="@id/my_appbar_container"
-        app:layout_anchorGravity="bottom|right|end" />
 
     <com.wang.avi.AVLoadingIndicatorView
         android:layout_height="wrap_content"
@@ -172,5 +163,14 @@
         android:layout_gravity="center"
         android:visibility="invisible"
         app:indicatorColor="@color/colorPrimary"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+
+        android:layout_margin="16dp"
+        android:src="@drawable/filter"/>
 
 </android.support.design.widget.CoordinatorLayout>

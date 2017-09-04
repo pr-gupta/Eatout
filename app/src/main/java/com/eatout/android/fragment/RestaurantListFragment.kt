@@ -3,12 +3,19 @@ package com.eatout.android.fragment
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.support.v4.app.Fragment
+import android.app.Fragment
+import android.support.v7.widget.*
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 
 import com.eatout.android.R
+import com.eatout.android.adapter.RestaurantListAdaptor
+import com.eatout.android.util.zomato.beans.restaurant.search.SearchResult
+import com.google.gson.Gson
+import java.io.FileReader
+import java.io.InputStreamReader
 
 /**
  * A simple [Fragment] subclass.
@@ -20,27 +27,33 @@ import com.eatout.android.R
  */
 class RestaurantListFragment : Fragment() {
 
-    // TODO: Rename and change types of parameters
-    private var mParam1: String? = null
-    private var mParam2: String? = null
-
+    lateinit var _recyclerView: RecyclerView
+    lateinit var _restaurantListAdapter: RestaurantListAdaptor
+    var _searchResult: SearchResult = SearchResult()
+    private val TAG = RestaurantListFragment::class.java.simpleName
     private var mListener: OnFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments != null) {
-            mParam1 = arguments.getString(ARG_PARAM1)
-            mParam2 = arguments.getString(ARG_PARAM2)
-        }
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater!!.inflate(R.layout.fragment_restaurant_list, container, false)
+
+
+        val rootView = inflater!!.inflate(R.layout.fragment_restaurant_list, container, false)
+
+        Log.v(TAG, "Inside on CreateView")
+        Log.v(TAG, _searchResult.toString())
+        Log.v(TAG, _searchResult.restaurants.size.toString())
+        _recyclerView = rootView.findViewById(R.id.restaurant_list)
+        _restaurantListAdapter = RestaurantListAdaptor(activity, _searchResult)
+        _recyclerView.adapter = _restaurantListAdapter
+        _recyclerView.layoutManager = GridLayoutManager(activity, 2)
+//        _recyclerView.itemAnimator = DefaultItemAnimator()
+        return rootView
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     fun onButtonPressed(uri: Uri) {
         if (mListener != null) {
             mListener!!.onFragmentInteraction(uri)
@@ -54,6 +67,21 @@ class RestaurantListFragment : Fragment() {
         } else {
             throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
         }
+    }
+
+    fun getDataFromActivity(searchResult: SearchResult) {
+        _searchResult.resultsFound = searchResult.resultsFound
+        _searchResult.resultsShown = searchResult.resultsShown
+        _searchResult.resultsStart = searchResult.resultsStart
+        _searchResult.restaurants.clear()
+        _searchResult.restaurants.addAll(searchResult.restaurants)
+        Log.d(TAG, "Inside getDataFromActivity" + _searchResult.toString())
+        _restaurantListAdapter.notifyDataSetChanged()
+//
+//  _recyclerView.adapter = RestaurantListAdaptor(activity, searchResult)
+//        _recyclerView.invalidate()
+
+        // _recyclerView.swapAdapter(RestaurantListAdaptor(activity, searchResult.restaurants), true)
     }
 
     override fun onDetach() {
@@ -71,32 +99,8 @@ class RestaurantListFragment : Fragment() {
      * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
      */
     interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         fun onFragmentInteraction(uri: Uri)
     }
 
-    companion object {
-        // TODO: Rename parameter arguments, choose names that match
-        // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-        private val ARG_PARAM1 = "param1"
-        private val ARG_PARAM2 = "param2"
 
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment RestaurantListFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        fun newInstance(param1: String, param2: String): RestaurantListFragment {
-            val fragment = RestaurantListFragment()
-            val args = Bundle()
-            args.putString(ARG_PARAM1, param1)
-            args.putString(ARG_PARAM2, param2)
-            fragment.arguments = args
-            return fragment
-        }
-    }
-}// Required empty public constructor
+}
