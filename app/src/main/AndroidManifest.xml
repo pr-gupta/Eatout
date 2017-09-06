@@ -29,8 +29,8 @@
         <activity
             android:name=".HomeActivity"
             android:label="@string/title_activity_home"
-            android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".FilterActivity"></activity>
+            android:windowSoftInputMode="stateHidden"/>
+        <activity android:name=".FilterActivity" />
     </application>
 
 </manifest>

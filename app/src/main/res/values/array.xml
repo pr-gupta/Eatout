@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="dummy">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
+    <string-array name="sort_by_entries">
+        <item>None</item>
+        <item>Cost</item>
+        <item>Rating</item>
+        <item>Distance</item>
+    </string-array>
+
+    <string-array name="sort_by_entryValues">
+        <item></item>
+        <item>cost</item>
+        <item>rating</item>
+        <item>real_distance</item>
+    </string-array>
+
+    <string-array name="order_by_entries">
+        <item>None</item>
+        <item>Ascending</item>
+        <item>Descending</item>
+    </string-array>
+
+    <string-array name="order_by_entryValues">
+        <item/>
+        <item>asc</item>
+        <item>desc</item>
+    </string-array>
+</resources>

@@ -20,6 +20,11 @@ class GPSUtil(private val _context:Context){
 
     private var TAG = GPSUtil::class.java.simpleName
 
+    companion object {
+        var _latitude = 0.0
+        var _longitude = 0.0
+    }
+
     private fun checkLocationPermission(): Boolean {
         val permission = "android.permission.ACCESS_FINE_LOCATION"
         val res = _context.checkCallingOrSelfPermission(permission)
@@ -67,6 +72,8 @@ class GPSUtil(private val _context:Context){
 
         override fun onLocationChanged(loc: Location?) {
             Log.i(TAG, "Location Changed - " + loc.toString())
+            _latitude = loc!!.latitude
+            _longitude = loc.longitude
             GoogleReverseGeocoder.reverseGeoEncode(_context, loc)
         }
 

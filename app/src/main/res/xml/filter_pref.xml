@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:sample="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/tools">>
+
+    <EditTextPreference
+        android:icon="@drawable/ic_cake_black_24dp"
+        android:key="et_keyword_preference"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:summary="would you like cake?"
+        android:title="@string/keyword"
+        />
+
+    <com.pavelsikun.seekbarpreference.SeekBarPreference
+        android:key="distance_seekbar"
+        android:title="Distance"
+        sample:msbp_interval="20"
+        sample:msbp_maxValue="50000"
+        sample:msbp_measurementUnit="meters"
+        sample:msbp_minValue="0"
+        sample:defaultValue="5000"/>
+
+    <com.eatout.android.util.CustomMultiSelectListPreference
+        android:key="category_list"
+        android:title="Category"
+        android:dialogTitle="Choose Category"
+        android:icon="@drawable/ic_free_breakfast_black_24dp"
+        android:dialogIcon="@drawable/ic_free_breakfast_black_24dp"
+        android:entries="@array/dummy"
+        android:entryValues="@array/dummy"
+        android:summary=""/>
+
+    <ListPreference
+        android:key="sort_by_list"
+        android:title="Sort By"
+        android:dialogTitle="Sort By"
+        android:icon="@drawable/ic_sort_by_alpha_black_24dp"
+        android:dialogIcon="@drawable/ic_sort_by_alpha_black_24dp"
+        android:entries="@array/sort_by_entries"
+        android:entryValues="@array/sort_by_entryValues"/>
+
+    <ListPreference
+        android:key="order_by_list"
+        android:title="Order By"
+        android:dialogTitle="Order By"
+        android:icon="@drawable/ic_swap_horiz_black_24dp"
+        android:dialogIcon="@drawable/ic_swap_horiz_black_24dp"
+        android:entries="@array/order_by_entries"
+        android:entryValues="@array/order_by_entryValues"/>
+
+
+</PreferenceScreen>

@@ -26,15 +26,15 @@ object SearchRestaurantsController : Callback<SearchResult> {
     private val TAG = SearchRestaurantsController.javaClass.simpleName
 
     private fun searchRestaurants(context: Context) {
-        searchRestaurants(context, _searchFilter)
+        searchRestaurants(_searchFilter)
     }
 
 
-    fun searchRestaurants(context: Context, searchFilter: SearchFilter) {
+    fun searchRestaurants(searchFilter: SearchFilter) {
         Log.i(TAG, "In search Restaurants")
 
         val data = searchFilter.getStringMap()
-
+        Log.d(TAG, data.toString())
         val gson = GsonBuilder().setLenient().create()
         val retrofit = Retrofit.Builder()
                 .baseUrl(URLS.BASE_URL)

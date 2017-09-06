@@ -1,10 +1,12 @@
 package com.eatout.android
 
 import android.app.Fragment
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.util.Log
@@ -20,8 +22,6 @@ import com.eatout.android.util.zomato.controller.SearchRestaurantsController
 import com.eatout.android.util.zomato.events.GetCategoryCompletionEvent
 import com.eatout.android.util.zomato.events.LocationUpdateEvent
 import com.eatout.android.util.zomato.events.SearchRestaurantCompletionEvent
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.wang.avi.AVLoadingIndicatorView
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar
 import org.greenrobot.eventbus.EventBus
@@ -39,6 +39,7 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnFragmentInter
     private lateinit var _categoryListHorizontalScrollView: HorizontalScrollView
     private var isRestaurantSearchNeeded = true
     private var _restaurantListFragment: RestaurantListFragment? = null
+    private lateinit var _filterFab: FloatingActionButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,11 +59,15 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnFragmentInter
         _locationInput = findViewById(R.id.et_location_input) as EditText
         _categoryLoadingProgressBar = findViewById(R.id.pb_category_loading) as SmoothProgressBar
         _categoryListHorizontalScrollView = findViewById(R.id.hsv_category_list) as HorizontalScrollView
+        _filterFab = findViewById(R.id.fab) as FloatingActionButton
 
         _locationInput.clearFocus()
         setupToolBar()
         fetchCategories()
         setUpGPS()
+
+
+        _filterFab.setOnClickListener(View.OnClickListener { startActivity(Intent(this, FilterActivity::class.java)) })
     }
 
     override fun onAttachFragment(fragment: Fragment?) {
@@ -105,7 +110,7 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnFragmentInter
             searchFilter.latitude = latitude
             searchFilter.longitude = longitude
 
-            SearchRestaurantsController.searchRestaurants(this, searchFilter)
+            SearchRestaurantsController.searchRestaurants(searchFilter)
             _avRestaurantLoading.show()
         }
     }

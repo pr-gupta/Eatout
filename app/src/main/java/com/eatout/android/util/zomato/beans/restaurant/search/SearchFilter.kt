@@ -67,7 +67,7 @@ data class SearchFilter(
             data.put("sort", sort.sortParam)
 
         if(orderBy != OrderBy.NONE)
-            data.put("order_by", orderBy.orderParam)
+            data.put("order", orderBy.orderParam)
 
         return data
     }
