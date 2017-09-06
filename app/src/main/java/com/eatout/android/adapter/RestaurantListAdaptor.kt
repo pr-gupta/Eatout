@@ -7,13 +7,10 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.PopupMenu
-import android.widget.TextView
+import android.widget.*
 import com.bumptech.glide.Glide
 import com.eatout.android.R
 import com.eatout.android.util.zomato.beans.restaurant.search.Restaurant
-import android.widget.Toast
 import com.eatout.android.util.zomato.beans.restaurant.search.SearchResult
 import java.util.*
 import com.eatout.android.R.id.overflow
@@ -36,7 +33,7 @@ class RestaurantListAdaptor(val _context: Context, private var _searchResult: Se
         val restaurant = _searchResult.restaurants[position].restaurant
         holder!!._title.text = restaurant.name
         holder._description.text =  "${restaurant.averageCostForTwo} ${restaurant.currency}"
-
+        holder._rating.rating = restaurant.userRating.aggregateRating.toFloat()
         Glide.with(_context).load(restaurant.thumb).into(holder._thumbnail)
 
         holder._overflow.setOnClickListener({ showPopupMenu(holder._overflow) })
@@ -60,6 +57,7 @@ class RestaurantListAdaptor(val _context: Context, private var _searchResult: Se
         val _title: TextView = view.findViewById(R.id.tv_restaurant_title)
         val _description: TextView = view.findViewById(R.id.tv_restaurant_description)
         val _thumbnail: ImageView = view.findViewById(R.id.iv_restaurant_thumbnail)
+        val _rating: RatingBar = view.findViewById(R.id.rb_restaurant_rating)
         val _overflow: ImageView = view.findViewById(R.id.overflow)
 
     }
