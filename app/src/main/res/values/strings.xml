@@ -188,4 +188,5 @@
     <string name="pref_title_vibrate">Vibrate</string>
     <string name="keyword">keyword</string>
     <string name="filter">Filter</string>
+    <string name="ride_with_uber">Ride with Uber</string>
 </resources>

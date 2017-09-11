@@ -38,10 +38,11 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
     compile 'com.android.support:appcompat-v7:26.0.0-alpha1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:design:26.0.0-alpha1'
-    compile 'com.google.firebase:firebase-auth:9.0.0'
+    compile 'com.google.firebase:firebase-auth:10.0.1'
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     compile 'org.greenrobot:eventbus:3.0.0'
@@ -54,8 +55,8 @@ dependencies {
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.android.support:support-v4:26.+'
     compile 'com.android.support:support-vector-drawable:26.+'
-    compile 'com.pavelsikun:material-seekbar-preference:2.3.0+'
-
+    compile 'com.pavelsikun:material-seekbar-preference:2.3.0.+'
+    compile 'com.uber.sdk:rides-android:0.5.3'
     testCompile 'junit:junit:4.12'
 }
 repositories {

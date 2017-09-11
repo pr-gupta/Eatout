@@ -127,7 +127,8 @@
         app:spb_progressiveStart_speed="1.5"
         app:spb_progressiveStop_speed="2.4"
         style="@style/GradientProgressBar"
-        android:paddingTop="190dp" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:paddingTop="5dp" />
 
     <HorizontalScrollView
         android:layout_width="match_parent"

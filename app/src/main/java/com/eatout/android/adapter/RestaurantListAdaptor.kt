@@ -1,6 +1,9 @@
 package com.eatout.android.adapter
 
 import android.content.Context
+import android.graphics.Color
+import android.os.Build
+import android.support.annotation.RequiresApi
 import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,12 +13,8 @@ import android.view.ViewGroup
 import android.widget.*
 import com.bumptech.glide.Glide
 import com.eatout.android.R
-import com.eatout.android.util.zomato.beans.restaurant.search.Restaurant
+import com.eatout.android.RestaurantDetailActivity
 import com.eatout.android.util.zomato.beans.restaurant.search.SearchResult
-import java.util.*
-import com.eatout.android.R.id.overflow
-
-
 
 
 /**
@@ -29,14 +28,22 @@ class RestaurantListAdaptor(val _context: Context, private var _searchResult: Se
         return _searchResult.restaurants.size
     }
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onBindViewHolder(holder: RestaurantListViewHolder?, position: Int) {
         val restaurant = _searchResult.restaurants[position].restaurant
         holder!!._title.text = restaurant.name
         holder._description.text =  "${restaurant.averageCostForTwo} ${restaurant.currency}"
         holder._rating.rating = restaurant.userRating.aggregateRating.toFloat()
+        holder._rating.progressDrawable.setTint(Color.parseColor("#${restaurant.userRating.ratingColor}"))
+
         Glide.with(_context).load(restaurant.thumb).into(holder._thumbnail)
 
         holder._overflow.setOnClickListener({ showPopupMenu(holder._overflow) })
+
+        holder._thumbnail.setOnClickListener({
+            Log.v(TAG, "view clicked!")
+            _context.startActivity(RestaurantDetailActivity.newIntent(_context, restaurant.id))
+        })
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RestaurantListViewHolder {
@@ -54,12 +61,17 @@ class RestaurantListAdaptor(val _context: Context, private var _searchResult: Se
 
     class RestaurantListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
+        val TAG = RestaurantListViewHolder::class.java.simpleName
+
         val _title: TextView = view.findViewById(R.id.tv_restaurant_title)
         val _description: TextView = view.findViewById(R.id.tv_restaurant_description)
         val _thumbnail: ImageView = view.findViewById(R.id.iv_restaurant_thumbnail)
         val _rating: RatingBar = view.findViewById(R.id.rb_restaurant_rating)
         val _overflow: ImageView = view.findViewById(R.id.overflow)
 
+        init {
+            view.isClickable = true
+        }
     }
 
     internal inner class RestaurantMenuItemClickListener : PopupMenu.OnMenuItemClickListener {

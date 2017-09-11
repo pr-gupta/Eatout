@@ -4,10 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
+
 
 class LoginActivity : AppCompatActivity() {
 
@@ -17,6 +20,9 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var _passwordInput: EditText
     private lateinit var _loginButton: Button
     private lateinit var _signUpActivityLink: TextView
+
+    private lateinit var mAuth: FirebaseAuth
+    private lateinit var mAuthListener: FirebaseAuth.AuthStateListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,8 +41,27 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this, HomeActivity::class.java))
             finish()
         })
+
+        mAuth = FirebaseAuth.getInstance()
+        mAuthListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
+            val user = firebaseAuth.currentUser
+            if (user != null) {
+                Log.d(TAG, "onAuthStateChanged:signed_in:" + user.uid)
+            } else {
+                Log.d(TAG, "onAuthStateChanged:signed_out")
+            }
+        }
     }
 
+    public override fun onStart() {
+        super.onStart()
+        mAuth.addAuthStateListener(mAuthListener)
+    }
+
+    public override fun onStop() {
+        super.onStop()
+        mAuth.removeAuthStateListener(mAuthListener)
+    }
     private var doubleBackToExitPressedOnce = false
 
     override fun onBackPressed() {

@@ -1,35 +1,30 @@
 package com.eatout.android.fragment
 
+import android.app.Fragment
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
-import android.app.Fragment
-import android.support.v7.widget.*
+import android.support.v7.widget.GridLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
 import com.eatout.android.R
 import com.eatout.android.adapter.RestaurantListAdaptor
 import com.eatout.android.util.zomato.beans.restaurant.search.SearchResult
-import com.google.gson.Gson
-import java.io.FileReader
-import java.io.InputStreamReader
 
 /**
  * A simple [Fragment] subclass.
  * Activities that contain this fragment must implement the
  * [RestaurantListFragment.OnFragmentInteractionListener] interface
  * to handle interaction events.
- * Use the [RestaurantListFragment.newInstance] factory method to
- * create an instance of this fragment.
  */
 class RestaurantListFragment : Fragment() {
 
-    lateinit var _recyclerView: RecyclerView
-    lateinit var _restaurantListAdapter: RestaurantListAdaptor
-    var _searchResult: SearchResult = SearchResult()
+    private lateinit var _recyclerView: RecyclerView
+    private lateinit var _restaurantListAdapter: RestaurantListAdaptor
+    private var _searchResult: SearchResult = SearchResult()
     private val TAG = RestaurantListFragment::class.java.simpleName
     private var mListener: OnFragmentInteractionListener? = null
 

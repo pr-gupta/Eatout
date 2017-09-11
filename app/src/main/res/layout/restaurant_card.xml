@@ -71,7 +71,7 @@
                 android:layout_below="@id/iv_restaurant_thumbnail"
                 android:layout_marginTop="30dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_more_vertical_black_24dp" />
+                card_view:srcCompat="@drawable/ic_more_vertical_black_24dp" />
         </RelativeLayout>
 
     </android.support.v7.widget.CardView>

@@ -120,7 +120,7 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnFragmentInter
         _avRestaurantLoading.hide()
         //_restaurantListFragment = RestaurantListFragment.newInstance(Gson().toJson(searchRestaurantCompletionEvent._searchResult))
         _restaurantListFragment!!.getDataFromActivity(searchRestaurantCompletionEvent._searchResult)
-        Log.i(TAG, "Restaurant fetch list complete")
+        Log.i(TAG, "Restaurant list fetch complete")
 
 
     }
@@ -177,7 +177,8 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnFragmentInter
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.isNotEmpty()
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    setUpGPS()
+                    Log.w(TAG, "User gave permission to get location by GPS")
+                    GPSUtil(this).fetchGPSLocation()
                 } else {
                     Log.w(TAG, "User didn't gave permission to get location by GPS")
                     _avGPSLoading.hide()

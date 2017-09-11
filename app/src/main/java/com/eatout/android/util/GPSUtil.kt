@@ -65,6 +65,7 @@ class GPSUtil(private val _context:Context){
 
     private fun getGpsStatus(): Boolean =
             (_context.getSystemService(Context.LOCATION_SERVICE) as LocationManager).isProviderEnabled(LocationManager.GPS_PROVIDER)
+            || (_context.getSystemService(Context.LOCATION_SERVICE) as LocationManager).isProviderEnabled(LocationManager.NETWORK_PROVIDER)
 
     private class CustomLocationListener(private val _context:Context): LocationListener {
 

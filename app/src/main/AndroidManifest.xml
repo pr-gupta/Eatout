@@ -10,6 +10,7 @@
         android:icon="@mipmap/ic_launcher_logo"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_logo"
+        android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:windowSoftInputMode="stateHidden">
@@ -29,8 +30,10 @@
         <activity
             android:name=".HomeActivity"
             android:label="@string/title_activity_home"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode="stateHidden" />
         <activity android:name=".FilterActivity" />
+        <activity android:name=".RestaurantDetailActivity" />
+        <activity android:name=".util.zomato.beans.ZomatoWebViewActivity"></activity>
     </application>
 
 </manifest>
