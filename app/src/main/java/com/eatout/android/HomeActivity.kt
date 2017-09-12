@@ -3,9 +3,12 @@ package com.eatout.android
 import android.app.Fragment
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
+import android.support.annotation.RequiresApi
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
@@ -22,6 +25,7 @@ import com.eatout.android.util.zomato.controller.SearchRestaurantsController
 import com.eatout.android.util.zomato.events.GetCategoryCompletionEvent
 import com.eatout.android.util.zomato.events.LocationUpdateEvent
 import com.eatout.android.util.zomato.events.SearchRestaurantCompletionEvent
+import com.google.firebase.auth.FirebaseAuth
 import com.wang.avi.AVLoadingIndicatorView
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar
 import org.greenrobot.eventbus.EventBus
@@ -112,6 +116,7 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnFragmentInter
 
             SearchRestaurantsController.searchRestaurants(searchFilter)
             _avRestaurantLoading.show()
+            isRestaurantSearchNeeded = false
         }
     }
 
@@ -132,8 +137,10 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnFragmentInter
         toolBar.inflateMenu(R.menu.menu_main)
 
         toolBar.setOnMenuItemClickListener({ item ->
-            if (item.itemId == R.id.item1) {
-
+            if (item.itemId == R.id.action_log_out) {
+                FirebaseAuth.getInstance().signOut()
+                startActivity(Intent(this, MainActivity::class.java))
+                finish()
             }
             false
         })
@@ -145,11 +152,12 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnFragmentInter
         (_categoryLoadingProgressBar).progressiveStart()
     }
 
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     @Subscribe
     fun onCompletionGetCategories(getCategoryCompletionEvent: GetCategoryCompletionEvent) {
         Log.v(TAG, getCategoryCompletionEvent._categoriesList.toString())
 
-
+        var currentSelectedCategory = Button(this)
 
         Handler().postDelayed({
             _categoryLoadingProgressBar.progressiveStop()
@@ -157,14 +165,45 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnFragmentInter
 
             for((categoryItem) in getCategoryCompletionEvent._categoriesList._categories) {
                 val buttonView = Button(this)
-                buttonView.text = categoryItem._name + " - " + categoryItem._id
+                buttonView.text = categoryItem._name
 
-                var px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14f, resources.displayMetrics)
-                var ipx = px.toInt()
+                val px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14f, resources.displayMetrics)
+                val ipx = px.toInt()
 
                 buttonView.setPadding(ipx, ipx, ipx, ipx)
+                buttonView.setBackgroundColor(Color.TRANSPARENT)
+
+                if(categoryItem._id == 2) {
+                    buttonView.setTextColor(Color.parseColor("#64dd17"))
+                    buttonView.background = getDrawable(R.drawable.bottom_shadow)
+                    currentSelectedCategory = buttonView
+                }
+
+                val finalCategoryItem = categoryItem
+                buttonView.setOnClickListener({ view ->
+
+                    if((view as Button).text.toString() != currentSelectedCategory.text.toString()) {
+                        view.setTextColor(Color.parseColor("#64dd17"))
+                        view.background = getDrawable(R.drawable.bottom_shadow)
+
+                        currentSelectedCategory.setTextColor(Color.BLACK)
+                        currentSelectedCategory.background = getDrawable(android.R.drawable.btn_default)
+                        currentSelectedCategory.setBackgroundColor(Color.TRANSPARENT)
+                        currentSelectedCategory.setPadding(ipx, ipx, ipx, ipx)
+                        currentSelectedCategory = view
+                    }
+                    if(GPSUtil._latitude != 0.0) {
+                        val searchFilter = SearchFilter(latitude = GPSUtil._latitude, longitude = GPSUtil._longitude, category = arrayOf(finalCategoryItem._id))
+                        Log.v(TAG, searchFilter.toString())
+                        SearchRestaurantsController.searchRestaurants(searchFilter)
+                        _avRestaurantLoading.show()
+                    }
+                })
+
                 Log.v(TAG, "CategoryItem name is ${categoryItem._name}")
                 layout.addView(buttonView)
+
+                findViewById(R.id.ll_category_list_bg).visibility = View.VISIBLE
             }
 
             Handler().postDelayed({_categoryListHorizontalScrollView.visibility = View.VISIBLE}, 100)

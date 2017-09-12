@@ -1,11 +1,15 @@
 package com.eatout.android
 
-import android.content.Intent
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
+
 
 class SignUpActivity : AppCompatActivity() {
 
@@ -17,6 +21,8 @@ class SignUpActivity : AppCompatActivity() {
     private lateinit var _passwordConfirmInput: EditText
     private lateinit var _createAccountButton: Button
     private lateinit var _loginActivityLink: TextView
+
+    private val TAG = javaClass.simpleName
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,5 +39,41 @@ class SignUpActivity : AppCompatActivity() {
         _loginActivityLink.setOnClickListener({
             finish()
         })
+
+        _createAccountButton.setOnClickListener({
+            val email = _emailTextInput.text.toString()
+            val password = _passwordInput.text.toString()
+
+            if(_emailTextInput.text.toString().trim() == "") {
+                _emailTextInput.error = "Email address is required"
+                _emailTextInput.requestFocus()
+            }
+            else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(_emailTextInput.text.toString()).matches()) {
+                _emailTextInput.error = "Can't you enter a valid email address"
+                _emailTextInput.requestFocus()
+            } else if(password != _passwordConfirmInput.text.toString()) {
+                _passwordConfirmInput.error = "Password does not match!"
+                _passwordConfirmInput.requestFocus()
+            }
+            else {
+                FirebaseAuth.getInstance()
+                        .createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(this, { task ->
+                            Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful)
+
+                            if (!task.isSuccessful) {
+                                Log.w(TAG, task.exception)
+                                Toast.makeText(this@SignUpActivity, "Authentication failed",
+                                        Toast.LENGTH_SHORT).show()
+                            } else {
+                                Toast.makeText(this@SignUpActivity, "SignUp Successful",
+                                        Toast.LENGTH_SHORT).show()
+                                Handler().postDelayed({finish()}, 1000)
+                            }
+                        })
+            }
+        })
+
+
     }
 }

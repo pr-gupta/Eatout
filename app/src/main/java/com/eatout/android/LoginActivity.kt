@@ -37,16 +37,44 @@ class LoginActivity : AppCompatActivity() {
             startActivity(Intent(this, SignUpActivity::class.java))
         })
 
+        mAuth = FirebaseAuth.getInstance()
+
         _loginButton.setOnClickListener({
-            startActivity(Intent(this, HomeActivity::class.java))
-            finish()
+
+            if(_emailTextInput.text.toString().trim() == "") {
+                _emailTextInput.error = "Email address is required"
+                _emailTextInput.requestFocus()
+            }
+            else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(_emailTextInput.text.toString()).matches()) {
+                _emailTextInput.error = "Can't you enter a valid email address"
+                _emailTextInput.requestFocus()
+            }
+            else {
+
+                mAuth.signInWithEmailAndPassword(_emailTextInput.text.toString(), _passwordInput.text.toString())
+                        .addOnCompleteListener(this, { task ->
+                            Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful)
+
+                            if (!task.isSuccessful) {
+                                Log.w(TAG, "signInWithEmail:failed", task.exception)
+                                Toast.makeText(this@LoginActivity, "Unable to login, either email or passoword is incorrect",
+                                        Toast.LENGTH_SHORT).show()
+                            }
+                        })
+            }
         })
 
-        mAuth = FirebaseAuth.getInstance()
         mAuthListener = FirebaseAuth.AuthStateListener { firebaseAuth ->
             val user = firebaseAuth.currentUser
             if (user != null) {
                 Log.d(TAG, "onAuthStateChanged:signed_in:" + user.uid)
+                Toast.makeText(this, "Login successful!! Taking you to home in a moment", Toast.LENGTH_SHORT).show()
+
+                Handler().postDelayed({
+                    startActivity(Intent(this, HomeActivity::class.java))
+                    finish()
+                }, 1000)
+
             } else {
                 Log.d(TAG, "onAuthStateChanged:signed_out")
             }
