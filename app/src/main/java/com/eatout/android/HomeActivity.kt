@@ -4,7 +4,6 @@ import android.app.Fragment
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -32,7 +31,7 @@ import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 
-class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnFragmentInteractionListener {
+class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToBottomListener {
 
     private val TAG = HomeActivity::class.java.simpleName
     private lateinit var _gpsButton: ImageButton
@@ -76,7 +75,7 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnFragmentInter
 
     override fun onAttachFragment(fragment: Fragment?) {
         super.onAttachFragment(fragment)
-        if(fragment is RestaurantListFragment)
+        if (fragment is RestaurantListFragment)
             _restaurantListFragment = fragment
     }
 
@@ -109,7 +108,7 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnFragmentInter
         _gpsButton.visibility = View.VISIBLE
         _gpsButton.setBackgroundResource(R.drawable.ic_gps_fixed_black_24dp)
 
-        if(isRestaurantSearchNeeded) {
+        if (isRestaurantSearchNeeded) {
             val searchFilter = SearchFilter()
             searchFilter.latitude = latitude
             searchFilter.longitude = longitude
@@ -163,7 +162,7 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnFragmentInter
             _categoryLoadingProgressBar.progressiveStop()
             val layout = findViewById(R.id.ll_category_list) as LinearLayout
 
-            for((categoryItem) in getCategoryCompletionEvent._categoriesList._categories) {
+            for ((categoryItem) in getCategoryCompletionEvent._categoriesList._categories) {
                 val buttonView = Button(this)
                 buttonView.text = categoryItem._name
 
@@ -173,7 +172,7 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnFragmentInter
                 buttonView.setPadding(ipx, ipx, ipx, ipx)
                 buttonView.setBackgroundColor(Color.TRANSPARENT)
 
-                if(categoryItem._id == 2) {
+                if (categoryItem._id == 2) {
                     buttonView.setTextColor(Color.parseColor("#64dd17"))
                     buttonView.background = getDrawable(R.drawable.bottom_shadow)
                     currentSelectedCategory = buttonView
@@ -182,7 +181,7 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnFragmentInter
                 val finalCategoryItem = categoryItem
                 buttonView.setOnClickListener({ view ->
 
-                    if((view as Button).text.toString() != currentSelectedCategory.text.toString()) {
+                    if ((view as Button).text.toString() != currentSelectedCategory.text.toString()) {
                         view.setTextColor(Color.parseColor("#64dd17"))
                         view.background = getDrawable(R.drawable.bottom_shadow)
 
@@ -192,7 +191,7 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnFragmentInter
                         currentSelectedCategory.setPadding(ipx, ipx, ipx, ipx)
                         currentSelectedCategory = view
                     }
-                    if(GPSUtil._latitude != 0.0) {
+                    if (GPSUtil._latitude != 0.0) {
                         val searchFilter = SearchFilter(latitude = GPSUtil._latitude, longitude = GPSUtil._longitude, category = arrayOf(finalCategoryItem._id))
                         Log.v(TAG, searchFilter.toString())
                         SearchRestaurantsController.searchRestaurants(searchFilter)
@@ -206,12 +205,12 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnFragmentInter
                 findViewById(R.id.ll_category_list_bg).visibility = View.VISIBLE
             }
 
-            Handler().postDelayed({_categoryListHorizontalScrollView.visibility = View.VISIBLE}, 100)
+            Handler().postDelayed({ _categoryListHorizontalScrollView.visibility = View.VISIBLE }, 100)
         }, 500)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        when(requestCode) {
+        when (requestCode) {
             1 -> {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.isNotEmpty()
@@ -235,7 +234,10 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnFragmentInter
         super.onStop()
     }
 
-    override fun onFragmentInteraction(uri: Uri) {
-
+    override fun refreshData(start: Int) {
+        Log.v(TAG, "Data refresh requested")
+        val searchFilter = SearchFilter(startOffset = start, latitude = GPSUtil._latitude, longitude = GPSUtil._longitude)
+        SearchRestaurantsController.searchRestaurants(searchFilter)
+        _avRestaurantLoading.show()
     }
 }

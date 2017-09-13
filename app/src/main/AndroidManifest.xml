@@ -34,6 +34,9 @@
         <activity android:name=".FilterActivity" />
         <activity android:name=".RestaurantDetailActivity" />
         <activity android:name=".util.zomato.beans.ZomatoWebViewActivity"></activity>
+
     </application>
+
+
 
 </manifest>

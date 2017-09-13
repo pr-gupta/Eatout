@@ -2,7 +2,6 @@ package com.eatout.android.fragment
 
 import android.app.Fragment
 import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -17,7 +16,7 @@ import com.eatout.android.util.zomato.beans.restaurant.search.SearchResult
 /**
  * A simple [Fragment] subclass.
  * Activities that contain this fragment must implement the
- * [RestaurantListFragment.OnFragmentInteractionListener] interface
+ * [RestaurantListFragment.OnScrollDownToBottomListener] interface
  * to handle interaction events.
  */
 class RestaurantListFragment : Fragment() {
@@ -26,8 +25,8 @@ class RestaurantListFragment : Fragment() {
     private lateinit var _restaurantListAdapter: RestaurantListAdaptor
     private var _searchResult: SearchResult = SearchResult()
     private val TAG = RestaurantListFragment::class.java.simpleName
-    private var mListener: OnFragmentInteractionListener? = null
-
+    private var mListener: OnScrollDownToBottomListener? = null
+    private var loading = true
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -45,19 +44,38 @@ class RestaurantListFragment : Fragment() {
         _restaurantListAdapter = RestaurantListAdaptor(activity, _searchResult)
         _recyclerView.adapter = _restaurantListAdapter
         _recyclerView.layoutManager = GridLayoutManager(activity, 2)
-//        _recyclerView.itemAnimator = DefaultItemAnimator()
-        return rootView
-    }
 
-    fun onButtonPressed(uri: Uri) {
-        if (mListener != null) {
-            mListener!!.onFragmentInteraction(uri)
-        }
+        _recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            var ydy = 0
+            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if(dy > 0) //check for scroll down
+                {
+                    val mLayoutManager = _recyclerView.layoutManager as GridLayoutManager
+                    val visibleItemCount = mLayoutManager.childCount
+                    val totalItemCount = mLayoutManager.itemCount
+                    val pastVisibleItems = mLayoutManager.findFirstVisibleItemPosition()
+
+                    if (loading)
+                    {
+                        if ( (visibleItemCount + pastVisibleItems) >= totalItemCount)
+                        {
+                            loading = false
+                            Log.v("...", "Last Item Wow !");
+                            mListener!!.refreshData(_searchResult.resultsStart + _searchResult.resultsShown)
+                        }
+                    }
+                }
+            }
+        })
+
+
+        return rootView
     }
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        if (context is OnFragmentInteractionListener) {
+        if (context is OnScrollDownToBottomListener) {
             mListener = context
         } else {
             throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
@@ -65,18 +83,27 @@ class RestaurantListFragment : Fragment() {
     }
 
     fun getDataFromActivity(searchResult: SearchResult) {
+
+        if(searchResult.resultsShown == 0)
+            return
+
+        var scrollUpRequired = false
+        if(searchResult.resultsStart < _searchResult.resultsStart + _searchResult.resultsShown) {
+            _searchResult.restaurants.clear()
+            scrollUpRequired = true
+        }
+        _searchResult.restaurants.addAll(searchResult.restaurants)
+
+
         _searchResult.resultsFound = searchResult.resultsFound
         _searchResult.resultsShown = searchResult.resultsShown
         _searchResult.resultsStart = searchResult.resultsStart
-        _searchResult.restaurants.clear()
-        _searchResult.restaurants.addAll(searchResult.restaurants)
         Log.d(TAG, "Inside getDataFromActivity" + _searchResult.toString())
         _restaurantListAdapter.notifyDataSetChanged()
-//
-//  _recyclerView.adapter = RestaurantListAdaptor(activity, searchResult)
-//        _recyclerView.invalidate()
 
-        // _recyclerView.swapAdapter(RestaurantListAdaptor(activity, searchResult.restaurants), true)
+        if(scrollUpRequired)
+            (_recyclerView.layoutManager as GridLayoutManager).scrollToPositionWithOffset(0, 0)
+        loading = true
     }
 
     override fun onDetach() {
@@ -93,8 +120,8 @@ class RestaurantListFragment : Fragment() {
      *
      * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
      */
-    interface OnFragmentInteractionListener {
-        fun onFragmentInteraction(uri: Uri)
+    interface OnScrollDownToBottomListener {
+        fun refreshData(start: Int)
     }
 
 
