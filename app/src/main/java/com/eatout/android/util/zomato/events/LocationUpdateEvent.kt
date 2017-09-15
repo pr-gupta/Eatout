@@ -5,5 +5,4 @@ import android.location.Location
 /**
  * Created by prashant.gup on 28/08/17.
  */
-class LocationUpdateEvent(val _loc: Location, val _cityName:String) {
-}
+class LocationUpdateEvent(val _loc: Location, val _cityName:String)

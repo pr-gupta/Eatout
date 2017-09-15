@@ -1,24 +1,25 @@
 package com.eatout.android
 
-import android.support.v7.app.AppCompatActivity
-import android.os.Bundle
 import android.content.Context
+import android.os.Bundle
+import android.os.Handler
 import android.preference.*
+import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import com.eatout.android.util.CustomMultiSelectListPreference
+import com.eatout.android.util.GPSUtil
+import com.eatout.android.util.NetworkUtil
 import com.eatout.android.util.zomato.beans.common.categories.Category
-import com.eatout.android.util.zomato.controller.CategoriesController
+import com.eatout.android.util.zomato.beans.restaurant.search.OrderBy
+import com.eatout.android.util.zomato.beans.restaurant.search.SearchFilter
+import com.eatout.android.util.zomato.beans.restaurant.search.SortParam
+import com.eatout.android.util.zomato.controller.*
 import com.eatout.android.util.zomato.events.GetCategoryCompletionEvent
 import com.pavelsikun.seekbarpreference.SeekBarPreference
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import com.eatout.android.util.CustomMultiSelectListPreference
-import com.eatout.android.util.GPSUtil
-import com.eatout.android.util.zomato.beans.restaurant.search.OrderBy
-import com.eatout.android.util.zomato.beans.restaurant.search.SearchFilter
-import com.eatout.android.util.zomato.beans.restaurant.search.SortParam
-import com.eatout.android.util.zomato.controller.SearchRestaurantsController
 
 
 class FilterActivity : AppCompatActivity() {
@@ -84,7 +85,13 @@ class FilterActivity : AppCompatActivity() {
             searchFilter.longitude = GPSUtil._longitude
 
             Log.v(TAG, searchFilter.toString())
-            SearchRestaurantsController.searchRestaurants(searchFilter)
+
+            val searchRestaurantController: ISearchRestaurant = if(NetworkUtil.isNetworkAvailable(this))
+                SearchRestaurantsController(this)
+            else
+                SearchRestaurantControllerOffline(this)
+            Handler().postDelayed({searchRestaurantController.searchRestaurants(searchFilter)}, 100)
+
             finish()
         } )
     }
@@ -105,7 +112,6 @@ class FilterActivity : AppCompatActivity() {
 
         override fun onStart() {
             super.onStart()
-            EventBus.getDefault().register(this)
         }
 
         override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,6 +124,8 @@ class FilterActivity : AppCompatActivity() {
             _categoryListPreference = findPreference(CATEGORY_LIST_KEY) as CustomMultiSelectListPreference
             _sortByListPreference = findPreference(SORT_BY_LIST_KEY) as ListPreference
             _orderByListPreference = findPreference(ORDER_BY_LIST_KEY) as ListPreference
+
+            EventBus.getDefault().register(this)
 
             setUpEditTextKeywordPreference()
             setUpCategoryListPreference()
@@ -141,7 +149,11 @@ class FilterActivity : AppCompatActivity() {
             _categoryListPreference.onPreferenceClickListener = Preference.OnPreferenceClickListener {
                 if(_category.isEmpty()) {
                     _categoryListPreference.dialog.dismiss()
-                    CategoriesController.getCategories()
+
+                    if(NetworkUtil.isNetworkAvailable(activity))
+                        CategoriesController(activity).getCategories()
+                    else
+                        CategoriesControllerOffline(activity).getCategories()
                 }
                 true
             }

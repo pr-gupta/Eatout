@@ -8,5 +8,5 @@ import com.google.gson.annotations.SerializedName
  */
 data class Category(@SerializedName("categories")
                     @Expose
-                    var categoryItem: CategoryItem
+                    var categoryItem: CategoryItem = CategoryItem()
 )

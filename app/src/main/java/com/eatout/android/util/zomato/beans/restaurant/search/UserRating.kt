@@ -11,17 +11,17 @@ import com.google.gson.annotations.SerializedName
 data class UserRating (
         @SerializedName("aggregate_rating")
         @Expose
-        var aggregateRating: String,
+        var aggregateRating: String = "",
 
         @SerializedName("rating_text")
         @Expose
-        var ratingText: String,
+        var ratingText: String = "",
 
         @SerializedName("rating_color")
         @Expose
-        var ratingColor: String,
+        var ratingColor: String = "",
 
         @SerializedName("votes")
         @Expose
-        var votes: String
+        var votes: String = ""
 )

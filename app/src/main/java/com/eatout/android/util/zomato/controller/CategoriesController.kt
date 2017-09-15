@@ -1,10 +1,12 @@
 package com.eatout.android.util.zomato.controller
 
+import android.content.Context
 import android.util.Log
+import com.eatout.android.db.DBCategoryHelper
 import com.eatout.android.util.PropertyUtil
 import com.eatout.android.util.zomato.ZomatoAPI
-import com.eatout.android.util.zomato.beans.common.categories.CategoriesList
 import com.eatout.android.util.zomato.beans.URLS
+import com.eatout.android.util.zomato.beans.common.categories.CategoriesList
 import com.eatout.android.util.zomato.events.GetCategoryCompletionEvent
 import com.google.gson.GsonBuilder
 import org.greenrobot.eventbus.EventBus
@@ -17,11 +19,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 /**
  * Created by prashant.gup on 23/08/17.
  */
-object CategoriesController : Callback<CategoriesList> {
+class CategoriesController (val context:Context) : Callback<CategoriesList>,ICategories(context) {
     private var _categoryList: CategoriesList? = null
-    private val TAG = CategoriesController.javaClass.simpleName
+    private val TAG = javaClass.simpleName
 
-    fun getCategories() {
+    override fun getCategories() {
         Log.v(TAG, "in getCategories")
         if(_categoryList == null) {
             val gson = GsonBuilder().setLenient().create()
@@ -43,7 +45,11 @@ object CategoriesController : Callback<CategoriesList> {
      override fun onResponse(call: Call<CategoriesList>?, response: Response<CategoriesList>?) {
         Log.v(TAG, "In onResponse")
         if(response != null && response.isSuccessful) {
-            _categoryList = response.body()
+            _categoryList = response.body() as CategoriesList
+
+            val db = DBCategoryHelper(context)
+            for(category in _categoryList!!._categories)
+                db.insertCategory(category)
             postCategory()
         }
         else {

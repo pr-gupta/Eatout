@@ -1,11 +1,11 @@
 package com.eatout.android.util.zomato.controller
 
 import android.content.Context
-import com.eatout.android.util.zomato.beans.restaurant.search.SearchFilter
 import android.util.Log
 import com.eatout.android.util.PropertyUtil
 import com.eatout.android.util.zomato.ZomatoAPI
 import com.eatout.android.util.zomato.beans.URLS
+import com.eatout.android.util.zomato.beans.restaurant.search.SearchFilter
 import com.eatout.android.util.zomato.beans.restaurant.search.SearchResult
 import com.eatout.android.util.zomato.events.SearchRestaurantCompletionEvent
 import com.google.gson.GsonBuilder
@@ -20,17 +20,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 /**
  * Created by prashant.gup on 28/08/17.
  */
-object SearchRestaurantsController : Callback<SearchResult> {
+class SearchRestaurantsController(var context: Context) : Callback<SearchResult>, ISearchRestaurant(context) {
 
-    private var _searchFilter = SearchFilter()
-    private val TAG = SearchRestaurantsController.javaClass.simpleName
-
-    private fun searchRestaurants(context: Context) {
-        searchRestaurants(_searchFilter)
-    }
+    private val TAG = javaClass.simpleName
 
 
-    fun searchRestaurants(searchFilter: SearchFilter) {
+    override fun searchRestaurants(searchFilter: SearchFilter) {
         Log.i(TAG, "In search Restaurants")
 
         val data = searchFilter.getStringMap()
@@ -51,7 +46,8 @@ object SearchRestaurantsController : Callback<SearchResult> {
     override fun onResponse(call: Call<SearchResult>?, response: Response<SearchResult>?) {
         if(response != null) {
             Log.v(TAG, "In response with data as ${response.body().toString()}")
-            EventBus.getDefault().post(SearchRestaurantCompletionEvent(response.body() as SearchResult))
+            val searchResult = (response.body() as SearchResult)
+            EventBus.getDefault().post(SearchRestaurantCompletionEvent(searchResult))
         } else {
             Log.w(TAG, "null response received from Search Restaurant request")
         }

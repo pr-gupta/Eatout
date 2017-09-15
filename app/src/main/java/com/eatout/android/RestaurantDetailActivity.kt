@@ -13,9 +13,11 @@ import android.view.View
 import android.widget.*
 import com.bumptech.glide.Glide
 import com.eatout.android.util.GPSUtil
+import com.eatout.android.util.NetworkUtil
 import com.eatout.android.util.uber.UberUtil
 import com.eatout.android.util.zomato.beans.ZomatoWebViewActivity
 import com.eatout.android.util.zomato.controller.RestaurantDetailController
+import com.eatout.android.util.zomato.controller.RestaurantDetailControllerOffline
 import com.eatout.android.util.zomato.events.GetRestaurantDetailCompletionEvent
 import com.uber.sdk.android.rides.RideParameters
 import com.uber.sdk.android.rides.RideRequestActivity
@@ -92,14 +94,19 @@ class RestaurantDetailActivity : Activity() {
 
 
         UberUtil.init()
-        RestaurantDetailController.getRestaurantDetails(_resID)
+
+        EventBus.getDefault().register(this)
+
+        if(NetworkUtil.isNetworkAvailable(this))
+            RestaurantDetailController(this).getRestaurantDetails(_resID)
+        else
+            RestaurantDetailControllerOffline(this).getRestaurantDetails(_resID)
 
 
     }
 
     override fun onStart() {
         super.onStart()
-        EventBus.getDefault().register(this)
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)

@@ -1,5 +1,6 @@
 package com.eatout.android.util.zomato.controller
 
+import android.content.Context
 import android.util.Log
 import com.eatout.android.util.PropertyUtil
 import com.eatout.android.util.zomato.ZomatoAPI
@@ -17,11 +18,11 @@ import retrofit2.converter.gson.GsonConverterFactory
 /**
  * Created by prashant.gup on 11/09/17.
  */
-object RestaurantDetailController : Callback<Restaurant_> {
+class RestaurantDetailController(context : Context) : Callback<Restaurant_>, IRestaurantDetail(context) {
 
-    val TAG = RestaurantDetailController::class.java.simpleName
+    val TAG = javaClass.simpleName!!
 
-    fun getRestaurantDetails(resId: String) {
+    override fun getRestaurantDetails(resId: String) {
         val gson = GsonBuilder().setLenient().create()
         val retrofit = Retrofit.Builder()
                 .baseUrl(URLS.BASE_URL)

@@ -8,5 +8,5 @@ import com.google.gson.annotations.SerializedName
  */
 data class CategoriesList (@SerializedName("categories")
                            @Expose
-                           val _categories:List<Category>
+                           val _categories:MutableList<Category> = mutableListOf()
 )

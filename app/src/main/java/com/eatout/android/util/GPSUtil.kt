@@ -11,6 +11,8 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.util.Log
+import com.eatout.android.util.zomato.events.LocationUpdateEvent
+import org.greenrobot.eventbus.EventBus
 
 
 /**
@@ -75,7 +77,11 @@ class GPSUtil(private val _context:Context){
             Log.i(TAG, "Location Changed - " + loc.toString())
             _latitude = loc!!.latitude
             _longitude = loc.longitude
-            GoogleReverseGeocoder.reverseGeoEncode(_context, loc)
+
+            if(NetworkUtil.isNetworkAvailable(context = _context))
+                GoogleReverseGeocoder.reverseGeoEncode(_context, loc)
+            else
+                EventBus.getDefault().post(LocationUpdateEvent(loc, "Unknown name due to no internet"))
         }
 
         override fun onStatusChanged(p0: String?, p1: Int, p2: Bundle?) {

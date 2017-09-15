@@ -1,6 +1,5 @@
 package com.eatout.android.util.zomato.beans.common.categories
 
-import android.support.annotation.IntegerRes
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
@@ -9,9 +8,9 @@ import com.google.gson.annotations.SerializedName
  */
 data class CategoryItem (@SerializedName("id")
                          @Expose
-                         var _id: Int,
+                         var _id: Int = 0,
 
                          @SerializedName("name")
                          @Expose
-                         var _name: String
+                         var _name: String = ""
 )

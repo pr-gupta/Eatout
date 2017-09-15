@@ -11,5 +11,5 @@ import com.google.gson.annotations.SerializedName
 data class R (
         @SerializedName("res_id")
         @Expose
-        var resId: Int
+        var resId: Int = 0
 )

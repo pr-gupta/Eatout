@@ -11,37 +11,37 @@ import com.google.gson.annotations.SerializedName
 data class Location (
         @SerializedName("address")
         @Expose
-        var address: String,
+        var address: String = "",
         
         @SerializedName("locality")
         @Expose
-        var locality: String,
+        var locality: String = "",
         
         @SerializedName("city")
         @Expose
-        var city: String,
+        var city: String = "",
         
         @SerializedName("city_id")
         @Expose
-        var cityId: Int,
+        var cityId: Int = 0,
         
         @SerializedName("latitude")
         @Expose
-        var latitude: String,
+        var latitude: String = "",
         
         @SerializedName("longitude")
         @Expose
-        var longitude: String,
+        var longitude: String = "",
         
         @SerializedName("zipcode")
         @Expose
-        var zipcode: String,
+        var zipcode: String = "",
         
         @SerializedName("country_id")
         @Expose
-        var countryId: Int,
+        var countryId: Int = 0,
         
         @SerializedName("locality_verbose")
         @Expose
-        var localityVerbose: String
+        var localityVerbose: String = ""
 )

@@ -11,5 +11,5 @@ import com.google.gson.annotations.SerializedName
 data class Restaurant (
         @SerializedName("restaurant")
         @Expose
-        val restaurant: Restaurant_
+        val restaurant: Restaurant_ = Restaurant_()
 )

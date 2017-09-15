@@ -42,7 +42,7 @@ class RestaurantListAdaptor(val _context: Context, private var _searchResult: Se
 
         holder._thumbnail.setOnClickListener({
             Log.v(TAG, "view clicked!")
-            _context.startActivity(RestaurantDetailActivity.newIntent(_context, restaurant.id))
+            _context.startActivity(RestaurantDetailActivity.newIntent(_context, restaurant.r.resId.toString()))
         })
     }
 

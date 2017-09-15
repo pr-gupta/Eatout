@@ -20,7 +20,7 @@ data class SearchFilter(
         var collectionID: String = "",
         var category: Array<Int> = arrayOf(2),
         var sort: SortParam = SortParam.NONE,
-        var orderBy: OrderBy = OrderBy.ASC
+        var orderBy: OrderBy = OrderBy.NONE
 ) {
     fun getStringMap() : Map<String, String> {
         val data = HashMap<String, String>()
