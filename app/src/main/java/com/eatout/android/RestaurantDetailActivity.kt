@@ -14,15 +14,26 @@ import android.widget.*
 import com.bumptech.glide.Glide
 import com.eatout.android.util.GPSUtil
 import com.eatout.android.util.NetworkUtil
+import com.eatout.android.util.PropertyUtil
 import com.eatout.android.util.uber.UberUtil
 import com.eatout.android.util.zomato.beans.ZomatoWebViewActivity
+import com.eatout.android.util.zomato.beans.restaurant.search.Restaurant_
 import com.eatout.android.util.zomato.controller.RestaurantDetailController
 import com.eatout.android.util.zomato.controller.RestaurantDetailControllerOffline
 import com.eatout.android.util.zomato.events.GetRestaurantDetailCompletionEvent
 import com.uber.sdk.android.rides.RideParameters
 import com.uber.sdk.android.rides.RideRequestActivity
+import com.uber.sdk.rides.client.ServerTokenSession
+import com.uber.sdk.rides.client.SessionConfiguration
+import com.uber.sdk.rides.client.UberRidesApi
+import com.uber.sdk.rides.client.model.PriceEstimatesResponse
+import com.uber.sdk.rides.client.model.ProductsResponse
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
 
 class RestaurantDetailActivity : Activity() {
 
@@ -40,6 +51,7 @@ class RestaurantDetailActivity : Activity() {
     private lateinit var _tvHasOnlineDelivery: TextView
     private lateinit var _tvIsDeliveringNow: TextView
     private lateinit var _tvHasTableBooking: TextView
+    private lateinit var _pbUberLoading: ProgressBar
     private lateinit var _btnViewMore: Button
 
 
@@ -79,8 +91,9 @@ class RestaurantDetailActivity : Activity() {
         _tvIsDeliveringNow = findViewById(R.id.tv_is_delivering_now)
         _tvHasTableBooking = findViewById(R.id.tv_has_table_booking)
         _btnViewMore = findViewById(R.id.btn_view_more)
+        _pbUberLoading = findViewById(R.id.pb_uber_loading)
 
-
+        _pbUberLoading.visibility = View.INVISIBLE
         _tvRestaurantName.visibility = View.INVISIBLE
         _tvRestaurantAddesss.visibility = View.INVISIBLE
         _tvRestaurantCost.visibility = View.INVISIBLE
@@ -156,6 +169,8 @@ class RestaurantDetailActivity : Activity() {
         _uberRideButton.visibility = View.VISIBLE
         _llRestaurantDetails.visibility = View.VISIBLE
         _btnViewMore.visibility = View.VISIBLE
+        _pbUberLoading.visibility = View.VISIBLE
+
 
         when(restaurant.hasOnlineDelivery) {
             0 -> {
@@ -192,6 +207,64 @@ class RestaurantDetailActivity : Activity() {
 
         _btnViewMore.setOnClickListener({
             startActivity(ZomatoWebViewActivity.newIntent(this, restaurant.url))
+        })
+
+        loadUberData(restaurant)
+    }
+
+    fun loadUberData(restaurant: Restaurant_) {
+
+        _pbUberLoading.isIndeterminate = true
+        val sessionConfiguration = SessionConfiguration.Builder()
+                .setClientId(PropertyUtil.getProperty("uberClientID"))
+                .setServerToken(PropertyUtil.getProperty("uberServerToken"))
+                .build()
+
+        val session = ServerTokenSession(sessionConfiguration)
+
+        val service = UberRidesApi.with(session).build().createService()
+
+        service.getProducts(
+                GPSUtil._latitude.toFloat(),
+                GPSUtil._longitude.toFloat()
+        ).enqueue(object: Callback<ProductsResponse> {
+
+            override fun onResponse(call: Call<ProductsResponse>?, response: Response<ProductsResponse>?) {
+                val productList = response!!.body()
+
+                service.getPriceEstimates(
+                        GPSUtil._latitude.toFloat(),
+                        GPSUtil._longitude.toFloat(),
+                        restaurant.location.latitude.toFloat(),
+                        restaurant.location.longitude.toFloat()
+                ).enqueue(object : Callback<PriceEstimatesResponse> {
+
+                    override fun onResponse(call: Call<PriceEstimatesResponse>?, response: Response<PriceEstimatesResponse>?) {
+                        _pbUberLoading.visibility = View.GONE
+                        val priceList = response!!.body()
+
+                        var cnt = 0
+                        loop@ for(price in priceList!!.prices) {
+                            cnt++
+                            when(cnt) {
+                                1 -> findViewById<TextView>(R.id.ride1).text = "${price.displayName} : ${price.estimate}"
+                                2 -> findViewById<TextView>(R.id.ride2).text = "${price.displayName} : ${price.estimate}"
+                                3 -> findViewById<TextView>(R.id.ride3).text = "${price.displayName} : ${price.estimate}"
+                                4 -> findViewById<TextView>(R.id.ride4).text = "${price.displayName} : ${price.estimate}"
+                                else -> break@loop
+                            }
+
+                        }
+                    }
+
+                    override fun onFailure(call: Call<PriceEstimatesResponse>?, t: Throwable?) {
+                    }
+                })
+            }
+
+            override fun onFailure(call: Call<ProductsResponse>?, t: Throwable?) {
+
+            }
         })
     }
 
