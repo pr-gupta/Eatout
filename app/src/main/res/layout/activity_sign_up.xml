@@ -1,136 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:fitsSystemWindows="true">
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="signUpViewModel"
+            type="com.eatout.android.model.view.SignUpViewModel"/>
+    </data>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingTop="30dp"
-        android:paddingLeft="24dp"
-        android:paddingRight="24dp"
-        android:weightSum="1">
+    <ScrollView
 
-        <!-- Logo -->
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_marginBottom="15dp"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/logo"
-            android:contentDescription="@string/app_name"
-            android:layout_weight="0.45" />
-
-        <!-- Dummy to prevent autoFocus to EditText-->
-        <LinearLayout
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:layout_width="0px"
-            android:layout_height="0px" />
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:fitsSystemWindows="true">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:baselineAligned="false">
-            <!-- First Name -->
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="30dp"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:weightSum="1">
+
+            <!-- Logo -->
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginBottom="15dp"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/logo"
+                android:contentDescription="@string/app_name"
+                android:layout_weight="0.45" />
+
+            <!-- Dummy to prevent autoFocus to EditText-->
+            <LinearLayout
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:layout_width="0px"
+                android:layout_height="0px" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:baselineAligned="false">
+                <!-- First Name -->
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp">
+                    <EditText
+                        android:text="@{signUpViewModel.inputFirstNameString}"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textAutoComplete"
+                        android:hint="@string/et_first_name_hint"/>
+                </android.support.design.widget.TextInputLayout>
+
+                <!-- Last Name -->
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp">
+
+                    <EditText
+                        android:text="@{signUpViewModel.inputLastNameString}"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/et_last_name_hint"
+                        android:inputType="textAutoComplete" />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+
+            <!--Email Label -->
             <android.support.design.widget.TextInputLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:layout_marginTop="4dp">
                 <EditText
-                    android:id="@+id/et_first_name"
+                    android:text="@={signUpViewModel.inputEmailString}"
+                    android:id="@+id/emailEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textAutoComplete"
-                    android:hint="@string/et_first_name_hint"/>
+                    android:inputType="textEmailAddress"
+                    android:hint="@string/et_email_hint"
+                    app:error="@{signUpViewModel.inputEmailStringError.length == 0 ? null : signUpViewModel.inputEmailStringError}"/>
             </android.support.design.widget.TextInputLayout>
 
-            <!-- Last Name -->
+            <!--Password Label -->
             <android.support.design.widget.TextInputLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="4dp"
                 android:layout_marginTop="4dp">
-
                 <EditText
-                    android:id="@+id/et_last_name"
+                    android:text="@={signUpViewModel.inputPasswordString}"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="@string/et_last_name_hint"
-                    android:inputType="textAutoComplete" />
+                    android:inputType="textPassword"
+                    android:hint="@string/et_password_hint"/>
             </android.support.design.widget.TextInputLayout>
+
+            <!-- Confirm Password Label -->
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:layout_marginTop="4dp">
+                <EditText
+                    android:text="@={signUpViewModel.inputPasswordConfirmationString}"
+                    android:layout_width="match_parent"
+                    android:id="@+id/confirmPasswordEditText"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:hint="@string/et_confirm_password_hint"
+                    app:error = "@{signUpViewModel.inputPasswordConfirmationStringError.length == 0 ? null : signUpViewModel.inputPasswordConfirmationStringError}"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <android.support.v7.widget.AppCompatButton
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginBottom="22dp"
+                android:layout_marginTop="25dp"
+                android:background="@color/colorPrimary"
+                android:padding="10dp"
+                android:text="@string/btn_create_account_text"
+                android:textColor="@color/common_google_signin_btn_text_dark_pressed"
+                android:onClick="@{() -> signUpViewModel.signUpClicked()}"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="15dp"
+                android:text="@string/tv_already_a_member_login_text"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:onClick="@{() -> signUpViewModel.loginLinkClicked()}"/>
         </LinearLayout>
-
-
-        <!--Email Label -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="4dp">
-            <EditText
-                android:id="@+id/et_input_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:hint="@string/et_email_hint"/>
-        </android.support.design.widget.TextInputLayout>
-
-        <!--Password Label -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="4dp">
-            <EditText
-                android:id="@+id/et_input_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:hint="@string/et_password_hint"/>
-        </android.support.design.widget.TextInputLayout>
-
-        <!-- Confirm Password Label -->
-        <android.support.design.widget.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="4dp"
-            android:layout_marginTop="4dp">
-            <EditText
-                android:id="@+id/et_input_password_confirm"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:hint="@string/et_confirm_password_hint"/>
-        </android.support.design.widget.TextInputLayout>
-
-        <android.support.v7.widget.AppCompatButton
-            android:id="@+id/btn_sign_up"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginBottom="22dp"
-            android:layout_marginTop="25dp"
-            android:background="@color/colorPrimary"
-            android:padding="10dp"
-            android:text="@string/btn_create_account_text"
-            android:textColor="@color/common_google_signin_btn_text_dark_pressed"
-            android:onClick="dhid"/>
-
-        <TextView
-            android:id="@+id/tv_link_login"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="15dp"
-            android:text="@string/tv_already_a_member_login_text"
-            android:textAlignment="center"
-            android:textSize="16sp" />
-    </LinearLayout>
-</ScrollView>
+    </ScrollView>
+</layout>
