@@ -24,9 +24,11 @@ class RestaurantListFragment : Fragment() {
     private lateinit var _recyclerView: RecyclerView
     private lateinit var _restaurantListAdapter: RestaurantListAdaptor
     private var _searchResult: SearchResult = SearchResult()
-    private val TAG = RestaurantListFragment::class.java.simpleName
     private var mListener: OnScrollDownToBottomListener? = null
     private var loading = true
+
+    private val TAG = javaClass.simpleName
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
@@ -40,6 +42,7 @@ class RestaurantListFragment : Fragment() {
         Log.v(TAG, "Inside on CreateView")
         Log.v(TAG, _searchResult.toString())
         Log.v(TAG, _searchResult.restaurants.size.toString())
+
         _recyclerView = rootView.findViewById(R.id.restaurant_list)
         _restaurantListAdapter = RestaurantListAdaptor(activity, _searchResult)
         _recyclerView.adapter = _restaurantListAdapter
@@ -116,7 +119,6 @@ class RestaurantListFragment : Fragment() {
      * fragment to allow an interaction in this fragment to be communicated
      * to the activity and potentially other fragments contained in that
      * activity.
-     *
      *
      * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
      */

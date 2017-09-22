@@ -73,8 +73,9 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
         fetchCategories()
         setUpGPS()
 
-
-        _filterFab.setOnClickListener(View.OnClickListener { startActivity(Intent(this, FilterActivity::class.java)) })
+        _filterFab.setOnClickListener({
+            startActivity(Intent(this, FilterActivity::class.java))
+        })
     }
 
     override fun onAttachFragment(fragment: Fragment?) {
@@ -91,6 +92,7 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
 
     override fun onResume() {
         super.onResume()
+
         Log.v(TAG, "**** ${EventBus.getDefault().isRegistered(this)}")
     }
 

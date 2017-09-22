@@ -19,7 +19,6 @@ class SignUpActivity : AppCompatActivity(), SignUpViewModel.SignUpViewModelChang
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_sign_up)
 
         _binding = DataBindingUtil.setContentView(this, R.layout.activity_sign_up)
         _binding.signUpViewModel = SignUpViewModel(context = this)

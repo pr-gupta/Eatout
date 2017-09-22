@@ -10,45 +10,51 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.PopupMenu
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.eatout.android.R
 import com.eatout.android.RestaurantDetailActivity
+import com.eatout.android.databinding.RestaurantCardBinding
+import com.eatout.android.model.view.RestaurantCardViewModel
 import com.eatout.android.util.zomato.beans.restaurant.search.SearchResult
 
 
 /**
  * Created by prashant.gup on 01/09/17.
+ *
  */
 class RestaurantListAdaptor(val _context: Context, private var _searchResult: SearchResult) : RecyclerView.Adapter<RestaurantListAdaptor.RestaurantListViewHolder>() {
 
     private val TAG = RestaurantListAdaptor::class.java.simpleName
 
-    override fun getItemCount(): Int {
-        return _searchResult.restaurants.size
-    }
+    override fun getItemCount() = _searchResult.restaurants.size
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
     override fun onBindViewHolder(holder: RestaurantListViewHolder?, position: Int) {
         val restaurant = _searchResult.restaurants[position].restaurant
-        holder!!._title.text = restaurant.name
-        holder._description.text =  "${restaurant.averageCostForTwo} ${restaurant.currency}"
-        holder._rating.rating = restaurant.userRating.aggregateRating.toFloat()
-        holder._rating.progressDrawable.setTint(Color.parseColor("#${restaurant.userRating.ratingColor}"))
+        holder!!.bind.restaurantCardViewModel.restaurantTitle.set(restaurant.name)
+        holder.bind.restaurantCardViewModel.restaurantCost.set("${restaurant.averageCostForTwo} ${restaurant.currency}")
+        holder.bind.restaurantCardViewModel.restaurantRatingValue.set(restaurant.userRating.aggregateRating.toFloat())
+        holder.bind.restaurantCardViewModel.restaurantRatingColor.set(Color.parseColor("#${restaurant.userRating.ratingColor}"))
 
-        Glide.with(_context).load(restaurant.thumb).into(holder._thumbnail)
+        Glide.with(_context).load(restaurant.thumb).into(holder.bind.restaurantThumbnail)
 
-        holder._overflow.setOnClickListener({ showPopupMenu(holder._overflow) })
+        holder.bind.overflow.setOnClickListener({ showPopupMenu(holder.bind.overflow) })
 
-        holder._thumbnail.setOnClickListener({
+        holder.bind.restaurantThumbnail.setOnClickListener({
             Log.v(TAG, "view clicked!")
             _context.startActivity(RestaurantDetailActivity.newIntent(_context, restaurant.r.resId.toString()))
         })
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RestaurantListViewHolder {
-        val itemView = LayoutInflater.from(parent!!.context).inflate(R.layout.restaurant_card, parent, false)
-        return RestaurantListViewHolder(itemView)
+        Log.d(TAG, parent!!.toString())
+        Log.d(TAG, LayoutInflater.from(parent.context).toString())
+        Log.d(TAG, R.layout.restaurant_card.toString())
+        val binding = RestaurantCardBinding.inflate(LayoutInflater.from(_context), parent, false)
+        binding.restaurantCardViewModel = RestaurantCardViewModel()
+        return RestaurantListViewHolder(binding)
     }
 
     private fun showPopupMenu(view: View) {
@@ -59,19 +65,15 @@ class RestaurantListAdaptor(val _context: Context, private var _searchResult: Se
         popup.show()
     }
 
-    class RestaurantListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class RestaurantListViewHolder(binding: RestaurantCardBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        val TAG = RestaurantListViewHolder::class.java.simpleName
-
-        val _title: TextView = view.findViewById(R.id.tv_restaurant_title)
-        val _description: TextView = view.findViewById(R.id.tv_restaurant_description)
-        val _thumbnail: ImageView = view.findViewById(R.id.iv_restaurant_thumbnail)
-        val _rating: RatingBar = view.findViewById(R.id.rb_restaurant_rating)
-        val _overflow: ImageView = view.findViewById(R.id.overflow)
+        private val TAG = javaClass.simpleName
+        var bind:RestaurantCardBinding = binding
 
         init {
-            view.isClickable = true
+            binding.root.isClickable = true
         }
+
     }
 
     internal inner class RestaurantMenuItemClickListener : PopupMenu.OnMenuItemClickListener {
