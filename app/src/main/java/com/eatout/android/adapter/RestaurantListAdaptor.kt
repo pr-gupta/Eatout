@@ -24,7 +24,11 @@ import com.eatout.android.util.zomato.beans.restaurant.search.SearchResult
  * Created by prashant.gup on 01/09/17.
  *
  */
-class RestaurantListAdaptor(val _context: Context, private var _searchResult: SearchResult) : RecyclerView.Adapter<RestaurantListAdaptor.RestaurantListViewHolder>() {
+class RestaurantListAdaptor(
+        val _context: Context,
+        private var _searchResult: SearchResult,
+        private val onReachedToLastItem: (Int) -> Unit
+) : RecyclerView.Adapter<RestaurantListAdaptor.RestaurantListViewHolder>() {
 
     private val TAG = RestaurantListAdaptor::class.java.simpleName
 
@@ -46,12 +50,14 @@ class RestaurantListAdaptor(val _context: Context, private var _searchResult: Se
             Log.v(TAG, "view clicked!")
             _context.startActivity(RestaurantDetailActivity.newIntent(_context, restaurant.r.resId.toString()))
         })
+
+        if(position == itemCount-1) {
+            onReachedToLastItem(position+1)
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): RestaurantListViewHolder {
-        Log.d(TAG, parent!!.toString())
-        Log.d(TAG, LayoutInflater.from(parent.context).toString())
-        Log.d(TAG, R.layout.restaurant_card.toString())
+
         val binding = RestaurantCardBinding.inflate(LayoutInflater.from(_context), parent, false)
         binding.restaurantCardViewModel = RestaurantCardViewModel()
         return RestaurantListViewHolder(binding)

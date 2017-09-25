@@ -49,6 +49,7 @@ class SignUpViewModel(
         (context as SignUpViewModelChangeListener).loginLinkClicked()
     }
 
+
     interface SignUpViewModelChangeListener {
         fun signUpClicked(email : String, password : String)
         fun loginLinkClicked()

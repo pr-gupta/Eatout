@@ -2,15 +2,16 @@ package com.eatout.android.fragment
 
 import android.app.Fragment
 import android.content.Context
+import android.databinding.ObservableField
 import android.os.Bundle
 import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.eatout.android.R
 import com.eatout.android.adapter.RestaurantListAdaptor
+import com.eatout.android.databinding.FragmentRestaurantListBinding
+import com.eatout.android.model.view.RecyclerViewModel
 import com.eatout.android.util.zomato.beans.restaurant.search.SearchResult
 
 /**
@@ -21,11 +22,10 @@ import com.eatout.android.util.zomato.beans.restaurant.search.SearchResult
  */
 class RestaurantListFragment : Fragment() {
 
-    private lateinit var _recyclerView: RecyclerView
-    private lateinit var _restaurantListAdapter: RestaurantListAdaptor
     private var _searchResult: SearchResult = SearchResult()
-    private var mListener: OnScrollDownToBottomListener? = null
+    private lateinit var mListener: OnScrollDownToBottomListener
     private var loading = true
+    private lateinit var _binding: FragmentRestaurantListBinding
 
     private val TAG = javaClass.simpleName
 
@@ -37,43 +37,14 @@ class RestaurantListFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
 
 
-        val rootView = inflater!!.inflate(R.layout.fragment_restaurant_list, container, false)
+        //val rootView = inflater!!.inflate(R.layout.fragment_restaurant_list, container, false)
+        _binding = FragmentRestaurantListBinding.inflate(inflater, container, false).apply {
+            viewModel = RecyclerViewModel(
+                    ObservableField(RestaurantListAdaptor(activity, _searchResult, { start -> mListener.refreshData(start) })),
+                    ObservableField(GridLayoutManager(activity, 2)))
+        }
 
-        Log.v(TAG, "Inside on CreateView")
-        Log.v(TAG, _searchResult.toString())
-        Log.v(TAG, _searchResult.restaurants.size.toString())
-
-        _recyclerView = rootView.findViewById(R.id.restaurant_list)
-        _restaurantListAdapter = RestaurantListAdaptor(activity, _searchResult)
-        _recyclerView.adapter = _restaurantListAdapter
-        _recyclerView.layoutManager = GridLayoutManager(activity, 2)
-
-        _recyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
-            var ydy = 0
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if(dy > 0) //check for scroll down
-                {
-                    val mLayoutManager = _recyclerView.layoutManager as GridLayoutManager
-                    val visibleItemCount = mLayoutManager.childCount
-                    val totalItemCount = mLayoutManager.itemCount
-                    val pastVisibleItems = mLayoutManager.findFirstVisibleItemPosition()
-
-                    if (loading)
-                    {
-                        if ( (visibleItemCount + pastVisibleItems) >= totalItemCount)
-                        {
-                            loading = false
-                            Log.v("...", "Last Item Wow !");
-                            mListener!!.refreshData(_searchResult.resultsStart + _searchResult.resultsShown)
-                        }
-                    }
-                }
-            }
-        })
-
-
-        return rootView
+        return _binding.root
     }
 
     override fun onAttach(context: Context?) {
@@ -102,16 +73,12 @@ class RestaurantListFragment : Fragment() {
         _searchResult.resultsShown = searchResult.resultsShown
         _searchResult.resultsStart = searchResult.resultsStart
         Log.d(TAG, "Inside getDataFromActivity" + _searchResult.toString())
-        _restaurantListAdapter.notifyDataSetChanged()
+        _binding.viewModel.adapter.get().notifyDataSetChanged()
 
         if(scrollUpRequired)
-            (_recyclerView.layoutManager as GridLayoutManager).scrollToPositionWithOffset(0, 0)
-        loading = true
-    }
+            _binding.viewModel.scrollToTop()
 
-    override fun onDetach() {
-        super.onDetach()
-        mListener = null
+        loading = true
     }
 
     /**
@@ -120,11 +87,8 @@ class RestaurantListFragment : Fragment() {
      * to the activity and potentially other fragments contained in that
      * activity.
      *
-     * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
      */
     interface OnScrollDownToBottomListener {
         fun refreshData(start: Int)
     }
-
-
 }
