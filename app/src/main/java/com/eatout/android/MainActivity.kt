@@ -37,9 +37,6 @@ class MainActivity : AppCompatActivity() {
                 finish()
             }
         }
-
-
-
     }
 
     override fun onStart() {

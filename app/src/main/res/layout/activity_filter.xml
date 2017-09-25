@@ -40,7 +40,6 @@
             android:background="@color/colorPrimary"
             android:padding="12dp"
             android:text="@string/filter"
-            android:textColor="@color/common_google_signin_btn_text_dark_pressed"
-            android:onClick=""/>
+            android:textColor="@color/common_google_signin_btn_text_dark_pressed" />
     </LinearLayout>
 </RelativeLayout>

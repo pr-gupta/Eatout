@@ -40,7 +40,7 @@ class FilterActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_filter)
 
-        _filterButton = findViewById(R.id.btn_filter) as Button
+        _filterButton = findViewById<Button>(R.id.btn_filter) as Button
 
         setupFilterButton()
         setupPreference()

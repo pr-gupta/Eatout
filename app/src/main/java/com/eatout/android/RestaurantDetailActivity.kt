@@ -247,10 +247,10 @@ class RestaurantDetailActivity : Activity() {
                         loop@ for(price in priceList!!.prices) {
                             cnt++
                             when(cnt) {
-                                1 -> findViewById<TextView>(R.id.ride1).text = "${price.displayName} : ${price.estimate}"
-                                2 -> findViewById<TextView>(R.id.ride2).text = "${price.displayName} : ${price.estimate}"
-                                3 -> findViewById<TextView>(R.id.ride3).text = "${price.displayName} : ${price.estimate}"
-                                4 -> findViewById<TextView>(R.id.ride4).text = "${price.displayName} : ${price.estimate}"
+                                1 -> (findViewById<TextView>(R.id.ride1)).text = "${price.displayName} : ${price.estimate}"
+                                2 -> (findViewById<TextView>(R.id.ride2)).text = "${price.displayName} : ${price.estimate}"
+                                3 -> (findViewById<TextView>(R.id.ride3)).text = "${price.displayName} : ${price.estimate}"
+                                4 -> (findViewById<TextView>(R.id.ride4)).text = "${price.displayName} : ${price.estimate}"
                                 else -> break@loop
                             }
 

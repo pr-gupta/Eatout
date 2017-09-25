@@ -215,7 +215,6 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:background="@color/colorPrimary"
-        android:onClick=""
         android:padding="12dp"
         android:text="More Details"
         android:textAllCaps="false"

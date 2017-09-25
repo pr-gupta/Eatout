@@ -25,6 +25,7 @@ import com.eatout.android.util.zomato.controller.*
 import com.eatout.android.util.zomato.events.GetCategoryCompletionEvent
 import com.eatout.android.util.zomato.events.LocationUpdateEvent
 import com.eatout.android.util.zomato.events.SearchRestaurantCompletionEvent
+import com.google.common.io.LineReader
 import com.google.firebase.auth.FirebaseAuth
 import com.wang.avi.AVLoadingIndicatorView
 import fr.castorflex.android.smoothprogressbar.SmoothProgressBar
@@ -54,14 +55,14 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
 
         setContentView(R.layout.activity_home)
 
-        _gpsButton = findViewById(R.id.gps_button) as ImageButton
-        _avGPSLoading = findViewById(R.id.av_gps_loading) as AVLoadingIndicatorView
-        _avRestaurantLoading = findViewById(R.id.av_restaurant_loading) as AVLoadingIndicatorView
+        _gpsButton = findViewById<ImageButton>(R.id.gps_button) as ImageButton
+        _avGPSLoading = findViewById<AVLoadingIndicatorView>(R.id.av_gps_loading) as AVLoadingIndicatorView
+        _avRestaurantLoading = findViewById<AVLoadingIndicatorView>(R.id.av_restaurant_loading) as AVLoadingIndicatorView
 
-        _locationInput = findViewById(R.id.et_location_input) as EditText
-        _categoryLoadingProgressBar = findViewById(R.id.pb_category_loading) as SmoothProgressBar
-        _categoryListHorizontalScrollView = findViewById(R.id.hsv_category_list) as HorizontalScrollView
-        _filterFab = findViewById(R.id.fab) as FloatingActionButton
+        _locationInput = findViewById<EditText>(R.id.et_location_input) as EditText
+        _categoryLoadingProgressBar = findViewById<SmoothProgressBar>(R.id.pb_category_loading) as SmoothProgressBar
+        _categoryListHorizontalScrollView = findViewById<HorizontalScrollView>(R.id.hsv_category_list) as HorizontalScrollView
+        _filterFab = findViewById<FloatingActionButton>(R.id.fab) as FloatingActionButton
 
         _searchRestaurantController = if(NetworkUtil.isNetworkAvailable(this))
             SearchRestaurantsController(this)
@@ -152,7 +153,7 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
 
 
     private fun setupToolBar() {
-        val toolBar = findViewById(R.id.toolbar3) as Toolbar
+        val toolBar = findViewById<Toolbar>(R.id.toolbar3) as Toolbar
         toolBar.title = ""
         toolBar.inflateMenu(R.menu.menu_main)
 
@@ -186,7 +187,7 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
 
         Handler().postDelayed({
             _categoryLoadingProgressBar.progressiveStop()
-            val layout = findViewById(R.id.ll_category_list) as LinearLayout
+            val layout = findViewById<LinearLayout>(R.id.ll_category_list) as LinearLayout
 
             for ((categoryItem) in getCategoryCompletionEvent._categoriesList._categories) {
                 val buttonView = Button(this)
@@ -228,7 +229,7 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
                 Log.v(TAG, "CategoryItem name is ${categoryItem._name}")
                 layout.addView(buttonView)
 
-                findViewById(R.id.ll_category_list_bg).visibility = View.VISIBLE
+                findViewById<LinearLayout>(R.id.ll_category_list_bg).visibility = View.VISIBLE
             }
 
             Handler().postDelayed({ _categoryListHorizontalScrollView.visibility = View.VISIBLE }, 100)
