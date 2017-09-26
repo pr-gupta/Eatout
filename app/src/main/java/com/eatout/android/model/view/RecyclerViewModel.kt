@@ -9,7 +9,7 @@ import com.eatout.android.adapter.RestaurantListAdaptor
 /**
  * Created by prashant.gup on 22/09/17.
  */
-class RecyclerViewModel (
+class RecyclerViewModel(
         val adapter: ObservableField<RestaurantListAdaptor>,
         val layoutManager: ObservableField<GridLayoutManager>
 ) {

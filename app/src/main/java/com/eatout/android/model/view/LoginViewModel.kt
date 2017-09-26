@@ -12,11 +12,11 @@ import com.eatout.android.databinding.ActivityLoginBinding
 /**
  * Created by prashant.gup on 18/09/17.
  */
-class LoginViewModel (
+class LoginViewModel(
         val inputEmailString: ObservableField<String> = ObservableField(""),
         val inputPasswordString: ObservableField<String> = ObservableField(""),
         val inputEmailStringError: ObservableField<String> = ObservableField(""),
-        val context:Context,
+        val context: Context,
         val activityLoginBinding: ActivityLoginBinding
 ) {
 
@@ -26,15 +26,13 @@ class LoginViewModel (
 
         Log.d(TAG, "Inside loginClick with email as ${inputEmailString.get()} and password as ${inputPasswordString.get()}")
         inputEmailStringError.set("")
-        if(inputEmailString.get().isEmpty()) {
+        if (inputEmailString.get().isEmpty()) {
             inputEmailStringError.set("Email address is required")
             activityLoginBinding.emailEditText.requestFocus()
-        }
-        else if(!android.util.Patterns.EMAIL_ADDRESS.matcher(inputEmailString.get()).matches()) {
+        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(inputEmailString.get()).matches()) {
             inputEmailStringError.set("Can't you enter a valid email address")
             activityLoginBinding.emailEditText.requestFocus()
-        }
-        else
+        } else
             (context as LoginActivity).login(inputEmailString.get(), inputPasswordString.get())
 
     }

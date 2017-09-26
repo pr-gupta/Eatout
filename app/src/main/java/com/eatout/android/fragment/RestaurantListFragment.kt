@@ -36,8 +36,6 @@ class RestaurantListFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
 
-
-        //val rootView = inflater!!.inflate(R.layout.fragment_restaurant_list, container, false)
         _binding = FragmentRestaurantListBinding.inflate(inflater, container, false).apply {
             viewModel = RecyclerViewModel(
                     ObservableField(RestaurantListAdaptor(activity, _searchResult, { start -> mListener.refreshData(start) })),

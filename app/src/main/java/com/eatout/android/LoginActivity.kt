@@ -23,7 +23,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val binding:ActivityLoginBinding = DataBindingUtil.setContentView(this, R.layout.activity_login)
+        val binding: ActivityLoginBinding = DataBindingUtil.setContentView(this, R.layout.activity_login)
 
         binding.loginViewModel = LoginViewModel(context = this, activityLoginBinding = binding)
         mAuth = FirebaseAuth.getInstance()
@@ -67,6 +67,7 @@ class LoginActivity : AppCompatActivity() {
         super.onStop()
         mAuth.removeAuthStateListener(mAuthListener)
     }
+
     private var doubleBackToExitPressedOnce = false
 
     override fun onBackPressed() {
@@ -78,6 +79,6 @@ class LoginActivity : AppCompatActivity() {
         this.doubleBackToExitPressedOnce = true
         Toast.makeText(this, "Please click BACK again to exit", Toast.LENGTH_SHORT).show()
 
-        Handler().postDelayed({doubleBackToExitPressedOnce = false }, 2000)
+        Handler().postDelayed({ doubleBackToExitPressedOnce = false }, 2000)
     }
 }

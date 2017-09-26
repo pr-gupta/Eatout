@@ -3,21 +3,22 @@ package com.eatout.android
 import android.app.Fragment
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.databinding.DataBindingUtil
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.support.annotation.RequiresApi
-import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.util.TypedValue
 import android.view.View
 import android.view.Window
-import android.widget.*
+import android.widget.Button
+import com.eatout.android.databinding.ActivityHomeBinding
 import com.eatout.android.db.DBRestaurantHelper
 import com.eatout.android.fragment.RestaurantListFragment
+import com.eatout.android.model.view.HomeActivityViewModel
 import com.eatout.android.util.GPSUtil
 import com.eatout.android.util.NetworkUtil
 import com.eatout.android.util.zomato.beans.restaurant.search.SearchFilter
@@ -25,58 +26,35 @@ import com.eatout.android.util.zomato.controller.*
 import com.eatout.android.util.zomato.events.GetCategoryCompletionEvent
 import com.eatout.android.util.zomato.events.LocationUpdateEvent
 import com.eatout.android.util.zomato.events.SearchRestaurantCompletionEvent
-import com.google.common.io.LineReader
 import com.google.firebase.auth.FirebaseAuth
-import com.wang.avi.AVLoadingIndicatorView
-import fr.castorflex.android.smoothprogressbar.SmoothProgressBar
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 
-class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToBottomListener {
+class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToBottomListener, HomeActivityViewModel.HomeActivityViewModelChangedListener {
 
     private val TAG = HomeActivity::class.java.simpleName
-    private lateinit var _gpsButton: ImageButton
-    private lateinit var _avGPSLoading: AVLoadingIndicatorView
-    private lateinit var _avRestaurantLoading: AVLoadingIndicatorView
-    private lateinit var _locationInput: EditText
-    private lateinit var _categoryLoadingProgressBar: SmoothProgressBar
-    private lateinit var _categoryListHorizontalScrollView: HorizontalScrollView
     private var isRestaurantSearchNeeded = true
     private var _restaurantListFragment: RestaurantListFragment? = null
-    private lateinit var _filterFab: FloatingActionButton
     private lateinit var _searchRestaurantController : ISearchRestaurant
+    private lateinit var _binding: ActivityHomeBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         EventBus.getDefault().register(this)
 
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE)
 
-        setContentView(R.layout.activity_home)
-
-        _gpsButton = findViewById<ImageButton>(R.id.gps_button) as ImageButton
-        _avGPSLoading = findViewById<AVLoadingIndicatorView>(R.id.av_gps_loading) as AVLoadingIndicatorView
-        _avRestaurantLoading = findViewById<AVLoadingIndicatorView>(R.id.av_restaurant_loading) as AVLoadingIndicatorView
-
-        _locationInput = findViewById<EditText>(R.id.et_location_input) as EditText
-        _categoryLoadingProgressBar = findViewById<SmoothProgressBar>(R.id.pb_category_loading) as SmoothProgressBar
-        _categoryListHorizontalScrollView = findViewById<HorizontalScrollView>(R.id.hsv_category_list) as HorizontalScrollView
-        _filterFab = findViewById<FloatingActionButton>(R.id.fab) as FloatingActionButton
+        _binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
+        _binding.viewModel = HomeActivityViewModel(context = this)
 
         _searchRestaurantController = if(NetworkUtil.isNetworkAvailable(this))
             SearchRestaurantsController(this)
         else
             SearchRestaurantControllerOffline(this)
 
-        _locationInput.clearFocus()
         setupToolBar()
         fetchCategories()
-        setUpGPS()
-
-        _filterFab.setOnClickListener({
-            startActivity(Intent(this, FilterActivity::class.java))
-        })
     }
 
     override fun onAttachFragment(fragment: Fragment?) {
@@ -93,17 +71,6 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
 
     override fun onResume() {
         super.onResume()
-
-        Log.v(TAG, "**** ${EventBus.getDefault().isRegistered(this)}")
-    }
-
-    private fun setUpGPS() {
-        _gpsButton.setOnClickListener({
-            (_gpsButton).visibility = View.INVISIBLE
-            (_avGPSLoading).show()
-
-            GPSUtil(this).fetchGPSLocation()
-        })
     }
 
     @Subscribe
@@ -115,11 +82,10 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
 
         Log.v(TAG, "onCompleteFetchGPSLocation() - ($latitude, $longitude) - [${locationUpdateEvent._cityName}]")
 
-        _locationInput.setText(locationUpdateEvent._cityName)
-        _locationInput.setHorizontallyScrolling(true)
-        _avGPSLoading.hide()
-        _gpsButton.visibility = View.VISIBLE
-        _gpsButton.setBackgroundResource(R.drawable.ic_gps_fixed_black_24dp)
+        _binding.viewModel.locationInput.set(locationUpdateEvent._cityName)
+        _binding.avGpsLoading.hide()
+        _binding.gpsButton.visibility = View.VISIBLE
+        _binding.gpsButton.setBackgroundResource(R.drawable.ic_gps_fixed_black_24dp)
 
         if (isRestaurantSearchNeeded) {
             val searchFilter = SearchFilter()
@@ -127,15 +93,14 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
             searchFilter.longitude = longitude
 
             _searchRestaurantController.searchRestaurants(searchFilter)
-            _avRestaurantLoading.show()
+            _binding.avRestaurantLoading.show()
             isRestaurantSearchNeeded = false
         }
     }
 
     @Subscribe
     fun onCompleteFetchRestaurantList(searchRestaurantCompletionEvent: SearchRestaurantCompletionEvent) {
-        _avRestaurantLoading.hide()
-        //_restaurantListFragment = RestaurantListFragment.newInstance(Gson().toJson(searchRestaurantCompletionEvent._searchResult))
+        _binding.avRestaurantLoading.hide()
 
         if(NetworkUtil.isNetworkAvailable(this)) {
             val db = DBRestaurantHelper(this)
@@ -148,12 +113,11 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
         _restaurantListFragment!!.getDataFromActivity(searchRestaurantCompletionEvent._searchResult)
         Log.i(TAG, "Restaurant list fetch complete")
 
-
     }
 
 
     private fun setupToolBar() {
-        val toolBar = findViewById<Toolbar>(R.id.toolbar3) as Toolbar
+        val toolBar = _binding.toolbar3
         toolBar.title = ""
         toolBar.inflateMenu(R.menu.menu_main)
 
@@ -175,7 +139,7 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
         else
             CategoriesControllerOffline(this).getCategories()
 
-        (_categoryLoadingProgressBar).progressiveStart()
+        _binding.pbCategoryLoading.progressiveStart()
     }
 
     @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -186,8 +150,8 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
         var currentSelectedCategory = Button(this)
 
         Handler().postDelayed({
-            _categoryLoadingProgressBar.progressiveStop()
-            val layout = findViewById<LinearLayout>(R.id.ll_category_list) as LinearLayout
+            _binding.pbCategoryLoading.progressiveStop()
+            val layout = _binding.llCategoryList
 
             for ((categoryItem) in getCategoryCompletionEvent._categoriesList._categories) {
                 val buttonView = Button(this)
@@ -222,17 +186,17 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
                         val searchFilter = SearchFilter(latitude = GPSUtil._latitude, longitude = GPSUtil._longitude, category = arrayOf(finalCategoryItem._id))
                         Log.v(TAG, searchFilter.toString())
                         _searchRestaurantController.searchRestaurants(searchFilter)
-                        _avRestaurantLoading.show()
+                        _binding.avRestaurantLoading.show()
                     }
                 })
 
                 Log.v(TAG, "CategoryItem name is ${categoryItem._name}")
                 layout.addView(buttonView)
 
-                findViewById<LinearLayout>(R.id.ll_category_list_bg).visibility = View.VISIBLE
+                _binding.llCategoryListBg.visibility = View.VISIBLE
             }
 
-            Handler().postDelayed({ _categoryListHorizontalScrollView.visibility = View.VISIBLE }, 100)
+            Handler().postDelayed({ _binding.hsvCategoryList.visibility = View.VISIBLE }, 100)
         }, 500)
     }
 
@@ -246,8 +210,8 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
                     GPSUtil(this).fetchGPSLocation()
                 } else {
                     Log.w(TAG, "User didn't gave permission to get location by GPS")
-                    _avGPSLoading.hide()
-                    _gpsButton.setBackgroundResource(R.drawable.ic_gps_not_fixed_black_24dp)
+                    _binding.avGpsLoading.hide()
+                    _binding.gpsButton.setBackgroundResource(R.drawable.ic_gps_not_fixed_black_24dp)
                 }
                 return
             }
@@ -267,6 +231,10 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
         Log.v(TAG, "Data refresh requested")
         val searchFilter = SearchFilter(startOffset = start, latitude = GPSUtil._latitude, longitude = GPSUtil._longitude)
         _searchRestaurantController.searchRestaurants(searchFilter)
-        _avRestaurantLoading.show()
+        _binding.avRestaurantLoading.show()
+    }
+
+    override fun turnOffRestaurantSearchNeeded() {
+        isRestaurantSearchNeeded = false
     }
 }

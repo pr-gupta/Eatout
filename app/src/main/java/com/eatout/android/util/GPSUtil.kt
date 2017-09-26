@@ -49,7 +49,6 @@ class GPSUtil(private val _context:Context){
             Log.w(TAG, "Location permission not granted. Asking User to provide permission")
             ActivityCompat.requestPermissions(_context as Activity , arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), 1)
         }
-
     }
 
     private fun getGPSLocation() {
