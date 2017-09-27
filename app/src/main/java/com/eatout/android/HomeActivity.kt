@@ -12,6 +12,8 @@ import android.support.annotation.RequiresApi
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.util.TypedValue
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.Window
 import android.widget.Button
@@ -53,7 +55,8 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
         else
             SearchRestaurantControllerOffline(this)
 
-        setupToolBar()
+        _binding.toolbar3.title = ""
+        setSupportActionBar(_binding.toolbar3)
         fetchCategories()
     }
 
@@ -83,9 +86,8 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
         Log.v(TAG, "onCompleteFetchGPSLocation() - ($latitude, $longitude) - [${locationUpdateEvent._cityName}]")
 
         _binding.viewModel.locationInput.set(locationUpdateEvent._cityName)
-        _binding.avGpsLoading.hide()
-        _binding.gpsButton.visibility = View.VISIBLE
-        _binding.gpsButton.setBackgroundResource(R.drawable.ic_gps_fixed_black_24dp)
+        _binding.viewModel.gpsAVLoadingIndicatorVisibility.set(false)
+        _binding.viewModel.gpsLocationFound.set(true)
 
         if (isRestaurantSearchNeeded) {
             val searchFilter = SearchFilter()
@@ -115,20 +117,23 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
 
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return true
+    }
 
-    private fun setupToolBar() {
-        val toolBar = _binding.toolbar3
-        toolBar.title = ""
-        toolBar.inflateMenu(R.menu.menu_main)
-
-        toolBar.setOnMenuItemClickListener({ item ->
-            if (item.itemId == R.id.action_log_out) {
-                FirebaseAuth.getInstance().signOut()
-                startActivity(Intent(this, MainActivity::class.java))
-                finish()
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        item?.let {
+            when (item.itemId) {
+                R.id.action_log_out -> {
+                    FirebaseAuth.getInstance().signOut()
+                    startActivity(Intent(this, MainActivity::class.java))
+                    finish()
+                }
             }
-            false
-        })
+        }
+
+        return false
     }
 
     private fun fetchCategories() {
@@ -210,8 +215,7 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
                     GPSUtil(this).fetchGPSLocation()
                 } else {
                     Log.w(TAG, "User didn't gave permission to get location by GPS")
-                    _binding.avGpsLoading.hide()
-                    _binding.gpsButton.setBackgroundResource(R.drawable.ic_gps_not_fixed_black_24dp)
+                    _binding.viewModel.gpsAVLoadingIndicatorVisibility.set(false)
                 }
                 return
             }
@@ -236,5 +240,9 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
 
     override fun turnOffRestaurantSearchNeeded() {
         isRestaurantSearchNeeded = false
+    }
+
+    override fun turnOnRestaurantSearchNeeded() {
+        isRestaurantSearchNeeded = true
     }
 }

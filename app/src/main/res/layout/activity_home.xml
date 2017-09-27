@@ -2,6 +2,7 @@
 
     <data>
 
+        <import type="android.view.View" />
         <variable
             name="viewModel"
             type="com.eatout.android.model.view.HomeActivityViewModel" />
@@ -44,7 +45,8 @@
                     android:layout_height="50dp"
                     android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                     app:layout_collapseMode="pin"
-                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                    android:title="" />
 
 
                 <LinearLayout
@@ -63,6 +65,7 @@
                         android:layout_weight="0.8">
 
                         <EditText
+                            android:layout_marginTop="5dp"
                             android:layout_width="match_parent"
                             android:layout_height="40dp"
                             android:background="#fff"
@@ -79,7 +82,7 @@
                             android:textColorHint="#595858" />
 
                         <ImageButton
-                            android:id="@+id/gps_button"
+                            android:layout_marginTop="2dp"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
@@ -88,11 +91,11 @@
                             android:layout_marginEnd="20dp"
                             android:layout_marginRight="20dp"
                             android:background="@android:color/transparent"
+                            android:visibility="@{viewModel.gpsAVLoadingIndicatorVisibility? View.INVISIBLE : View.VISIBLE}"
                             android:onClick="@{(view) -> viewModel.onGPSButtonClicked(view)}"
-                            app:srcCompat="@drawable/ic_gps_not_fixed_black_24dp" />
+                            android:src="@{viewModel.gpsLocationFound ? @drawable/ic_gps_fixed_black_24dp : @drawable/ic_gps_not_fixed_black_24dp}" />
 
                         <com.wang.avi.AVLoadingIndicatorView
-                            android:id="@+id/av_gps_loading"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
@@ -161,7 +164,7 @@
                     android:id="@+id/ll_category_list"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"></LinearLayout>
+                    android:orientation="horizontal" />
             </HorizontalScrollView>
 
             <fragment

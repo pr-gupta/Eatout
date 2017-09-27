@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.databinding.BindingAdapter
 import android.databinding.ObservableField
+import android.util.Log
 import android.view.View
 import com.eatout.android.FilterActivity
 import com.eatout.android.util.GPSUtil
@@ -15,18 +16,18 @@ import com.wang.avi.AVLoadingIndicatorView
 class HomeActivityViewModel(
         val context: Context,
         val locationInput: ObservableField<String> = ObservableField(""),
-        val gpsAVLoadingIndicatorVisibility: ObservableField<Boolean> = ObservableField(false)
+        val gpsAVLoadingIndicatorVisibility: ObservableField<Boolean> = ObservableField(false),
+        val gpsLocationFound: ObservableField<Boolean> = ObservableField(false),
+        val restaurantAVLoadingIndicatorViewVisibility: ObservableField<Boolean> = ObservableField(false)
 ) {
 
     companion object {
         @JvmStatic
         @BindingAdapter("app:gpsAVChanged")
         fun gpsAVChanged(avLoadingIndicatorView: AVLoadingIndicatorView, gpsAVLoadingIndicatorVisibility: Boolean) {
-            gpsAVLoadingIndicatorVisibility.let {
-                when (it) {
-                    true -> avLoadingIndicatorView.show()
-                    false -> avLoadingIndicatorView.hide()
-                }
+            when (gpsAVLoadingIndicatorVisibility) {
+                true -> avLoadingIndicatorView.show()
+                false -> avLoadingIndicatorView.hide()
             }
         }
     }
@@ -46,13 +47,14 @@ class HomeActivityViewModel(
     }
 
     fun onGPSButtonClicked(view: View) {
-        view.visibility = View.INVISIBLE
+        Log.v(TAG, "GPSButtonClicked")
         gpsAVLoadingIndicatorVisibility.set(true)
-        mListener.turnOffRestaurantSearchNeeded()
+        mListener.turnOnRestaurantSearchNeeded()
         GPSUtil(_context = context).fetchGPSLocation()
     }
 
     interface HomeActivityViewModelChangedListener {
         fun turnOffRestaurantSearchNeeded()
+        fun turnOnRestaurantSearchNeeded()
     }
 }

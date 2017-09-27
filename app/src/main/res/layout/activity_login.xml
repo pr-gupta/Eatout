@@ -30,7 +30,7 @@
                 android:layout_marginBottom="24dp"
                 android:layout_weight="0.47"
                 android:contentDescription="@string/app_name"
-                android:src="@drawable/logo" />
+                android:src="@mipmap/ic_launcher_logo" />
 
             <!-- Dummy to prevent autoFocus to EditText-->
             <LinearLayout
