@@ -103,7 +103,7 @@
                             android:layout_marginEnd="10dp"
                             android:layout_marginRight="10dp"
                             android:visibility="invisible"
-                            app:gpsAVChanged="@{viewModel.gpsAVLoadingIndicatorVisibility}"
+                            app:avChanged="@{viewModel.gpsAVLoadingIndicatorVisibility}"
                             app:indicatorColor="@color/colorPrimary"
                             app:indicatorName="BallClipRotatePulseIndicator" />
 
@@ -185,7 +185,8 @@
             android:layout_gravity="center"
             android:visibility="invisible"
             app:indicatorColor="@color/colorPrimary"
-            app:indicatorName="LineScaleIndicator" />
+            app:indicatorName="LineScaleIndicator"
+            app:avChanged="@{viewModel.restaurantAVLoadingIndicatorViewVisibility}" />
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"

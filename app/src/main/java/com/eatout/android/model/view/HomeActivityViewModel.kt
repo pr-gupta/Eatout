@@ -23,9 +23,9 @@ class HomeActivityViewModel(
 
     companion object {
         @JvmStatic
-        @BindingAdapter("app:gpsAVChanged")
-        fun gpsAVChanged(avLoadingIndicatorView: AVLoadingIndicatorView, gpsAVLoadingIndicatorVisibility: Boolean) {
-            when (gpsAVLoadingIndicatorVisibility) {
+        @BindingAdapter("app:avChanged")
+        fun avChanged(avLoadingIndicatorView: AVLoadingIndicatorView, avLoadingIndicatorVisibility: Boolean) {
+            when (avLoadingIndicatorVisibility) {
                 true -> avLoadingIndicatorView.show()
                 false -> avLoadingIndicatorView.hide()
             }

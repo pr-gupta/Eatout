@@ -42,7 +42,13 @@ class RestaurantListAdaptor(
         holder.bind.restaurantCardViewModel.restaurantRatingValue.set(restaurant.userRating.aggregateRating.toFloat())
         holder.bind.restaurantCardViewModel.restaurantRatingColor.set(Color.parseColor("#${restaurant.userRating.ratingColor}"))
 
-        Glide.with(_context).load(restaurant.thumb).into(holder.bind.restaurantThumbnail)
+        Glide.with(_context)
+                .load(restaurant.thumb)
+                .placeholder(R.drawable.loading_shimmer_2)
+                .error(R.drawable.ic_error_image)
+                .crossFade()
+                .centerCrop()
+                .into(holder.bind.restaurantThumbnail)
 
         holder.bind.overflow.setOnClickListener({ showPopupMenu(holder.bind.overflow) })
 

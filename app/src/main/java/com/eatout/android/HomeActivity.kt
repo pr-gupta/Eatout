@@ -95,14 +95,14 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
             searchFilter.longitude = longitude
 
             _searchRestaurantController.searchRestaurants(searchFilter)
-            _binding.avRestaurantLoading.show()
+            _binding.viewModel.restaurantAVLoadingIndicatorViewVisibility.set(true)
             isRestaurantSearchNeeded = false
         }
     }
 
     @Subscribe
     fun onCompleteFetchRestaurantList(searchRestaurantCompletionEvent: SearchRestaurantCompletionEvent) {
-        _binding.avRestaurantLoading.hide()
+        _binding.viewModel.restaurantAVLoadingIndicatorViewVisibility.set(false)
 
         if(NetworkUtil.isNetworkAvailable(this)) {
             val db = DBRestaurantHelper(this)
@@ -191,7 +191,7 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
                         val searchFilter = SearchFilter(latitude = GPSUtil._latitude, longitude = GPSUtil._longitude, category = arrayOf(finalCategoryItem._id))
                         Log.v(TAG, searchFilter.toString())
                         _searchRestaurantController.searchRestaurants(searchFilter)
-                        _binding.avRestaurantLoading.show()
+                        _binding.viewModel.restaurantAVLoadingIndicatorViewVisibility.set(true)
                     }
                 })
 
@@ -235,7 +235,7 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
         Log.v(TAG, "Data refresh requested")
         val searchFilter = SearchFilter(startOffset = start, latitude = GPSUtil._latitude, longitude = GPSUtil._longitude)
         _searchRestaurantController.searchRestaurants(searchFilter)
-        _binding.avRestaurantLoading.show()
+        _binding.viewModel.restaurantAVLoadingIndicatorViewVisibility.set(true)
     }
 
     override fun turnOffRestaurantSearchNeeded() {
