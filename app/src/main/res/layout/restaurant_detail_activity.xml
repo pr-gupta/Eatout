@@ -1,284 +1,327 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.eatout.android.RestaurantDetailActivity">
+<layout>
 
-    <Button
-        android:id="@+id/ride_request_button"
-        android:layout_width="180dp"
-        android:layout_height="48dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="2dp"
-        android:layout_marginRight="4dp"
-        android:elevation="8dp"
-        android:paddingRight="20dp"
-        android:paddingLeft="20dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:text="@string/ride_with_uber"
-        android:background="@android:color/black"
-        android:textColor="@android:color/white"
-        android:drawableLeft="@drawable/uber_icon_small"
-        android:drawablePadding="10dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        android:textAllCaps="false"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintHorizontal_bias="0.935" />
+    <data>
 
-    <ProgressBar
-        android:id="@+id/pb_restaurant_detail_fetch"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        <import type="android.view.View" />
 
-    <ImageView
-        android:id="@+id/iv_restaurant_thumb"
-        android:layout_width="0dp"
-        android:layout_height="160dp"
-        android:layout_marginBottom="100dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/border_shadow"
-        app:layout_constraintBottom_toTopOf="@+id/pb_restaurant_detail_fetch"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.052"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp" />
+        <variable
+            name="viewModel"
+            type="com.eatout.android.model.view.RestaurantDetailViewModel" />
+    </data>
 
-    <LinearLayout
-        android:id="@+id/ll_restaurant_details"
-        android:layout_width="330dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="136dp"
-        android:background="@drawable/border_shadow"
-        android:gravity="center"
-        android:orientation="vertical"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp">
+    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.eatout.android.RestaurantDetailActivity">
 
-        <TextView
-            android:id="@+id/tv_restaurant_name"
+        <Button
+            android:id="@+id/ride_request_button"
+            android:layout_width="180dp"
+            android:layout_height="48dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="2dp"
+            android:layout_marginRight="4dp"
+            android:elevation="8dp"
+            android:visibility="@{viewModel.isRestaurantDataLoaded ? View.VISIBLE : View.INVISIBLE}"
+            android:onClick="@{(view) -> viewModel.uberButtonClicked()}"
+            android:paddingRight="20dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:text="@string/ride_with_uber"
+            android:background="@android:color/black"
+            android:textColor="@android:color/white"
+            android:drawableLeft="@drawable/uber_icon_small"
+            android:drawablePadding="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            android:textAllCaps="false"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintHorizontal_bias="0.935" />
+
+        <ProgressBar
+            android:id="@+id/pb_restaurant_detail_fetch"
+            style="?android:attr/progressBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:visibility="@{viewModel.isRestaurantDataLoaded()? View.INVISIBLE : View.VISIBLE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginLeft="8dp"
+            app:layout_constraintLeft_toLeftOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_restaurant_thumb"
+            android:layout_width="0dp"
+            android:layout_height="160dp"
+            android:layout_marginBottom="100dp"
+            android:layout_marginLeft="8dp"
             android:layout_marginRight="8dp"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:paddingEnd="5dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:paddingStart="5dp"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+            android:background="@drawable/border_shadow"
             app:layout_constraintBottom_toTopOf="@+id/pb_restaurant_detail_fetch"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tv_restaurant_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="5dp"
-            android:paddingEnd="5dp"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:paddingStart="5dp"
-            android:textAlignment="center" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.052"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:id="@+id/ll_restaurant_details"
+            android:layout_width="330dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="1">
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="136dp"
+            android:background="@drawable/border_shadow"
+            android:gravity="center"
+            android:visibility="@{viewModel.isRestaurantDataLoaded() ? View.VISIBLE : View.INVISIBLE}"
+            android:orientation="vertical"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp">
 
             <TextView
-                android:id="@+id/tv_restaurant_distance"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="50dp"
-                android:layout_marginRight="50dp"
-                android:drawableLeft="@drawable/distance_small"
-                android:drawableStart="@drawable/distance_small"
-                android:padding="5dp"
-                android:textAlignment="center" />
-
-            <TextView
-                android:id="@+id/tv_restaurant_cost"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="0.27"
-                android:drawableLeft="@drawable/cost_small"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:paddingEnd="5dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingStart="5dp"
+                android:text="@{viewModel.restaurantName}"
+                android:visibility="@{viewModel.isRestaurantDataLoaded() ? View.VISIBLE : View.INVISIBLE}"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                app:layout_constraintBottom_toTopOf="@+id/pb_restaurant_detail_fetch"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintRight_toRightOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:padding="5dp"
+                android:paddingEnd="5dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingStart="5dp"
+                android:text="@{viewModel.restaurantAddress}"
+                android:visibility="@{viewModel.isRestaurantDataLoaded() ? View.VISIBLE : View.INVISIBLE}"
                 android:textAlignment="center" />
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="@{viewModel.isRestaurantDataLoaded() ? View.VISIBLE : View.INVISIBLE}"
+                android:weightSum="1">
+
+                <TextView
+                    android:id="@+id/tv_restaurant_distance"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="50dp"
+                    android:layout_marginRight="50dp"
+                    android:drawableLeft="@drawable/distance_small"
+                    android:drawableStart="@drawable/distance_small"
+                    android:padding="5dp"
+                    android:text="@{viewModel.restaurantDistance}"
+                    android:textAlignment="center" />
+
+                <TextView
+                    android:id="@+id/tv_restaurant_cost"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.27"
+                    android:drawableLeft="@drawable/cost_small"
+                    android:padding="5dp"
+                    android:text="@{viewModel.restaurantCost}"
+                    android:textAlignment="center" />
+
+            </LinearLayout>
+
+
+            <RatingBar
+                android:id="@+id/rb_restaurant_rating"
+                style="@style/Widget.AppCompat.RatingBar.Small"
+                android:layout_width="92dp"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:textAlignment="center"
+                android:rating="@{viewModel.restaurantRating}"
+                android:progressTint="@{viewModel.restaurantRatingColor}" />
         </LinearLayout>
 
-
-        <RatingBar
-            android:id="@+id/rb_restaurant_rating"
-            style="@style/Widget.AppCompat.RatingBar.Small"
-            android:layout_width="92dp"
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="5dp"
-            android:textAlignment="center" />
-    </LinearLayout>
+            android:layout_marginLeft="32dp"
+            android:text="CUISINES"
+            android:visibility="@{viewModel.isRestaurantDataLoaded() ? View.VISIBLE : View.INVISIBLE}"
+            android:textColor="#616161"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pb_restaurant_detail_fetch"
+            android:layout_marginStart="32dp" />
 
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="32dp"
-        android:text="CUISINES"
-        android:textColor="#616161"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pb_restaurant_detail_fetch"
-        android:layout_marginStart="32dp" />
+        <TextView
+            android:id="@+id/tv_cuisines_data"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="32dp"
+            android:layout_marginTop="2dp"
+            android:text="@{viewModel.restaurantCuisinesText}"
+            android:visibility="@{viewModel.isRestaurantDataLoaded() ? View.VISIBLE : View.INVISIBLE}"
+            android:textColor="@android:color/black"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView3"
+            android:layout_marginStart="32dp" />
 
-    <TextView
-        android:id="@+id/tv_cuisines_data"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="32dp"
-        android:layout_marginTop="2dp"
-        android:textColor="@android:color/black"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3"
-        android:layout_marginStart="32dp" />
+        <TextView
+            android:id="@+id/tv_has_online_delivery"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text='@{viewModel.hasOnlineDelivery == 1 ? " Delivers Online!!" : " Online Delivery Unavailable"}'
+            android:drawableLeft="@{viewModel.hasOnlineDelivery == 1 ? @drawable/check_circle_small : @drawable/cancel_circle_small}"
+            android:visibility="@{viewModel.isRestaurantDataLoaded() ? View.VISIBLE : View.INVISIBLE}"
+            app:layout_constraintTop_toBottomOf="@+id/tv_cuisines_data"
+            android:layout_marginLeft="32dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginStart="32dp" />
 
-    <TextView
-        android:id="@+id/tv_has_online_delivery"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        app:layout_constraintTop_toBottomOf="@+id/tv_cuisines_data"
-        android:layout_marginLeft="32dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginStart="32dp" />
+        <TextView
+            android:id="@+id/tv_is_delivering_now"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text='@{viewModel.isDeliveringNow == 1 ? " Delivering Now" : " Delivery Not Available Right Now"}'
+            android:drawableLeft="@{viewModel.isDeliveringNow == 1 ? @drawable/check_circle_small : @drawable/cancel_circle_small}"
+            android:visibility="@{viewModel.isRestaurantDataLoaded() ? View.VISIBLE : View.INVISIBLE}"
+            app:layout_constraintTop_toBottomOf="@+id/tv_has_online_delivery"
+            android:layout_marginLeft="32dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginStart="32dp" />
 
-    <TextView
-        android:id="@+id/tv_is_delivering_now"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        app:layout_constraintTop_toBottomOf="@+id/tv_has_online_delivery"
-        android:layout_marginLeft="32dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginStart="32dp" />
+        <TextView
+            android:id="@+id/tv_has_table_booking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:text='@{viewModel.hasTableBooking == 1 ? " Reservations Available" : " Seating Not Available"}'
+            android:drawableLeft="@{viewModel.hasTableBooking == 1 ? @drawable/check_circle_small : @drawable/cancel_circle_small}"
+            android:visibility="@{viewModel.isRestaurantDataLoaded() ? View.VISIBLE : View.INVISIBLE}"
+            app:layout_constraintTop_toBottomOf="@+id/tv_is_delivering_now"
+            android:layout_marginLeft="32dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:layout_marginStart="32dp" />
 
-    <TextView
-        android:id="@+id/tv_has_table_booking"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        app:layout_constraintTop_toBottomOf="@+id/tv_is_delivering_now"
-        android:layout_marginLeft="32dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginStart="32dp" />
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_view_more"
+            android:layout_width="150dp"
+            android:layout_height="48dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="2dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/colorPrimary"
+            android:padding="12dp"
+            android:visibility="@{viewModel.isRestaurantDataLoaded() ? View.VISIBLE : View.INVISIBLE}"
+            android:onClick="@{(view) -> viewModel.viewMoreDetailsButtonClicked()}"
+            android:text="More Details"
+            android:textAllCaps="false"
+            android:textColor="@color/common_google_signin_btn_text_dark_pressed"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/ride_request_button"
+            app:layout_constraintTop_toBottomOf="@+id/tv_has_table_booking"
+            app:layout_constraintVertical_bias="1.0" />
 
-    <android.support.v7.widget.AppCompatButton
-        android:id="@+id/btn_view_more"
-        android:layout_width="150dp"
-        android:layout_height="48dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="2dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/colorPrimary"
-        android:padding="12dp"
-        android:text="More Details"
-        android:textAllCaps="false"
-        android:textColor="@color/common_google_signin_btn_text_dark_pressed"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@+id/ride_request_button"
-        app:layout_constraintTop_toBottomOf="@+id/tv_has_table_booking"
-        app:layout_constraintVertical_bias="1.0" />
+        <TextView
+            android:id="@+id/ride1"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="0dp"
+            android:gravity="start"
+            android:text="@{viewModel.uberRideDetails1}"
+            android:textAlignment="viewStart"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/pb_restaurant_detail_fetch"
+            tools:layout_editor_absoluteX="281dp"
+            tools:layout_editor_absoluteY="377dp" />
 
-    <TextView
-        android:id="@+id/ride1"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="0dp"
-        android:gravity="start"
-        android:textAlignment="viewStart"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/pb_restaurant_detail_fetch"
-        tools:layout_editor_absoluteX="281dp"
-        tools:layout_editor_absoluteY="377dp" />
+        <TextView
+            android:id="@+id/ride2"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:gravity="start"
+            android:text="@{viewModel.uberRideDetails2}"
+            android:textAlignment="viewStart"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ride1" />
 
-    <TextView
-        android:id="@+id/ride2"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        android:gravity="start"
-        android:textAlignment="viewStart"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ride1" />
+        <TextView
+            android:id="@+id/ride3"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@{viewModel.uberRideDetails3}"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ride2" />
 
-    <TextView
-        android:id="@+id/ride3"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ride2" />
+        <TextView
+            android:id="@+id/ride4"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="8dp"
+            android:text="@{viewModel.uberRideDetails4}"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ride3" />
 
-    <TextView
-        android:id="@+id/ride4"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ride3" />
+        <ProgressBar
+            style="?android:attr/progressBarStyle"
+            android:indeterminate="true"
+            android:visibility="@{!viewModel.isRestaurantDataLoaded ? View.INVISIBLE : (viewModel.isUberDataLoaded ? View.GONE : View.VISIBLE)}"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="-6dp"
+            app:layout_constraintBottom_toTopOf="@+id/ride4"
+            app:layout_constraintLeft_toLeftOf="@+id/ride3"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/ride2" />
 
-    <ProgressBar
-        android:id="@+id/pb_uber_loading"
-        style="?android:attr/progressBarStyle"
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="-6dp"
-        app:layout_constraintBottom_toTopOf="@+id/ride4"
-        app:layout_constraintLeft_toLeftOf="@+id/ride3"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/ride2" />
+    </android.support.constraint.ConstraintLayout>
 
-</android.support.constraint.ConstraintLayout>
+</layout>
