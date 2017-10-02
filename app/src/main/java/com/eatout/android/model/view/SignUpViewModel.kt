@@ -14,6 +14,7 @@ class SignUpViewModel(
         val inputEmailStringError: ObservableField<String> = ObservableField(""),
         val inputPasswordConfirmationString: ObservableField<String> = ObservableField(""),
         val inputPasswordConfirmationStringError: ObservableField<String> = ObservableField(""),
+        val isLoading: ObservableField<Boolean> = ObservableField(false),
         val context: Context
 ) {
 
@@ -24,6 +25,7 @@ class SignUpViewModel(
     }
 
     fun signUpClicked() {
+
         inputEmailStringError.set("")
         inputPasswordConfirmationStringError.set("")
 

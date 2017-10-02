@@ -19,11 +19,12 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mAuthListener: FirebaseAuth.AuthStateListener
+    private lateinit var binding: ActivityLoginBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val binding: ActivityLoginBinding = DataBindingUtil.setContentView(this, R.layout.activity_login)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
 
         binding.loginViewModel = LoginViewModel(context = this, activityLoginBinding = binding)
         mAuth = FirebaseAuth.getInstance()
@@ -33,7 +34,6 @@ class LoginActivity : AppCompatActivity() {
             if (user != null) {
                 Log.d(TAG, "onAuthStateChanged:signed_in:" + user.uid)
                 Toast.makeText(this, "Login successful!! Taking you to home in a moment", Toast.LENGTH_SHORT).show()
-
                 Handler().postDelayed({
                     startActivity(Intent(this, HomeActivity::class.java))
                     finish()
@@ -46,10 +46,12 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun login(email: String, password: String) {
+        binding.loginViewModel.isLoading.set(true)
+
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, { task ->
                     Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful)
-
+                    binding.loginViewModel.isLoading.set(false)
                     if (!task.isSuccessful) {
                         Log.w(TAG, "signInWithEmail:failed", task.exception)
                         Toast.makeText(this@LoginActivity, "Unable to login, either email or passoword is incorrect",

@@ -16,6 +16,7 @@ class LoginViewModel(
         val inputEmailString: ObservableField<String> = ObservableField(""),
         val inputPasswordString: ObservableField<String> = ObservableField(""),
         val inputEmailStringError: ObservableField<String> = ObservableField(""),
+        val isLoading: ObservableField<Boolean> = ObservableField(false),
         val context: Context,
         val activityLoginBinding: ActivityLoginBinding
 ) {
@@ -25,6 +26,8 @@ class LoginViewModel(
     fun onLoginClick(view: View) {
 
         Log.d(TAG, "Inside loginClick with email as ${inputEmailString.get()} and password as ${inputPasswordString.get()}")
+
+
         inputEmailStringError.set("")
         if (inputEmailString.get().isEmpty()) {
             inputEmailStringError.set("Email address is required")

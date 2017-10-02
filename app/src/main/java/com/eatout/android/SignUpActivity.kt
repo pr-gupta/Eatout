@@ -29,11 +29,13 @@ class SignUpActivity : AppCompatActivity(), SignUpViewModel.SignUpViewModelChang
     }
 
     override fun signUpClicked(email: String, password: String) {
+        _binding.signUpViewModel.isLoading.set(true)
+
         FirebaseAuth.getInstance()
                 .createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, { task ->
                     Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful)
-
+                    _binding.signUpViewModel.isLoading.set(false)
                     if (!task.isSuccessful) {
                         Log.w(TAG, task.exception)
                         Toast.makeText(this@SignUpActivity, "Authentication failed",

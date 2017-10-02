@@ -55,14 +55,6 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Item 1 Selected", Toast.LENGTH_LONG).show()
                 true
             }
-            R.id.item2 -> {
-                Toast.makeText(this, "Item 2 Selected", Toast.LENGTH_LONG).show()
-                true
-            }
-            R.id.item3 -> {
-                Toast.makeText(this, "Item 3 Selected", Toast.LENGTH_LONG).show()
-                true
-            }
             else -> super.onOptionsItemSelected(item)
         }
     }

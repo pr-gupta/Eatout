@@ -5,6 +5,8 @@
         <variable
             name="signUpViewModel"
             type="com.eatout.android.model.view.SignUpViewModel"/>
+
+        <import type="android.view.View" />
     </data>
 
     <ScrollView
@@ -122,6 +124,13 @@
                     android:hint="@string/et_confirm_password_hint"
                     app:error = "@{signUpViewModel.inputPasswordConfirmationStringError.length == 0 ? null : signUpViewModel.inputPasswordConfirmationStringError}"/>
             </android.support.design.widget.TextInputLayout>
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:visibility="@{signUpViewModel.isLoading ? View.VISIBLE : View.INVISIBLE}" />
 
             <android.support.v7.widget.AppCompatButton
                 android:layout_width="match_parent"

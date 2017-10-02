@@ -7,6 +7,8 @@
         <variable
             name="loginViewModel"
             type="com.eatout.android.model.view.LoginViewModel" />
+
+        <import type="android.view.View" />
     </data>
 
     <ScrollView
@@ -71,6 +73,12 @@
                     android:text="@={loginViewModel.inputPasswordString}" />
             </android.support.design.widget.TextInputLayout>
 
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_gravity="center_horizontal|center_vertical"
+                android:visibility="@{loginViewModel.isLoading() ? View.VISIBLE : View.INVISIBLE}" />
             <android.support.v7.widget.AppCompatButton
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
