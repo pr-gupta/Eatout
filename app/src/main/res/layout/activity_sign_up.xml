@@ -54,7 +54,7 @@
                     android:layout_marginBottom="4dp"
                     android:layout_marginTop="4dp">
                     <EditText
-                        android:text="@{signUpViewModel.inputFirstNameString}"
+                        android:text="@={signUpViewModel.inputFirstNameString}"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textAutoComplete"
@@ -70,7 +70,7 @@
                     android:layout_marginTop="4dp">
 
                     <EditText
-                        android:text="@{signUpViewModel.inputLastNameString}"
+                        android:text="@={signUpViewModel.inputLastNameString}"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/et_last_name_hint"

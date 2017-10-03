@@ -18,7 +18,8 @@ class HomeActivityViewModel(
         val locationInput: ObservableField<String> = ObservableField(""),
         val gpsAVLoadingIndicatorVisibility: ObservableField<Boolean> = ObservableField(false),
         val gpsLocationFound: ObservableField<Boolean> = ObservableField(false),
-        val restaurantAVLoadingIndicatorViewVisibility: ObservableField<Boolean> = ObservableField(false)
+        val restaurantAVLoadingIndicatorViewVisibility: ObservableField<Boolean> = ObservableField(false),
+        val name: ObservableField<String> = ObservableField("")
 ) {
 
     companion object {

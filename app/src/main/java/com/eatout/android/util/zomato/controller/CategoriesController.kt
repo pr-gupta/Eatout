@@ -28,7 +28,7 @@ class CategoriesController (val context:Context) : Callback<CategoriesList>,ICat
         if(_categoryList == null) {
             val gson = GsonBuilder().setLenient().create()
             val retrofit = Retrofit.Builder()
-                    .baseUrl(URLS.BASE_URL)
+                    .baseUrl(URLS.ZOMATO_BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .build()
             val zomatoAPI = retrofit.create(ZomatoAPI::class.java)

@@ -32,7 +32,7 @@ class SearchRestaurantsController(var context: Context) : Callback<SearchResult>
         Log.d(TAG, data.toString())
         val gson = GsonBuilder().setLenient().create()
         val retrofit = Retrofit.Builder()
-                .baseUrl(URLS.BASE_URL)
+                .baseUrl(URLS.ZOMATO_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
         val zomatoAPI = retrofit.create(ZomatoAPI::class.java)

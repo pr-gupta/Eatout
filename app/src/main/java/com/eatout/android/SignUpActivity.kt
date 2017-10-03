@@ -9,6 +9,7 @@ import android.widget.Toast
 import com.eatout.android.databinding.ActivitySignUpBinding
 import com.eatout.android.model.view.SignUpViewModel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
 
 
 class SignUpActivity : AppCompatActivity(), SignUpViewModel.SignUpViewModelChangeListener {
@@ -43,6 +44,16 @@ class SignUpActivity : AppCompatActivity(), SignUpViewModel.SignUpViewModelChang
                     } else {
                         Toast.makeText(this@SignUpActivity, "SignUp Successful",
                                 Toast.LENGTH_SHORT).show()
+
+                        val map: HashMap<String, String> = hashMapOf()
+                        map.put("FirstName", _binding.signUpViewModel.inputFirstNameString.get())
+                        map.put("LastName", _binding.signUpViewModel.inputLastNameString.get())
+                        map.put("profileImageURL", "https://i.imgur.com/akSIG69.png")
+                        Log.v(TAG, map.toString())
+
+                        FirebaseDatabase.getInstance().reference
+                                .child("users").child(task.result.user.uid)
+                                .setValue(map)
                         Handler().postDelayed({finish()}, 1000)
                     }
                 })

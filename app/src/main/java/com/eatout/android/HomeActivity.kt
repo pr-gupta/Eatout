@@ -17,18 +17,24 @@ import android.view.MenuItem
 import android.view.View
 import android.view.Window
 import android.widget.Button
+import com.bumptech.glide.Glide
 import com.eatout.android.databinding.ActivityHomeBinding
 import com.eatout.android.db.DBRestaurantHelper
 import com.eatout.android.fragment.RestaurantListFragment
 import com.eatout.android.model.view.HomeActivityViewModel
 import com.eatout.android.util.GPSUtil
 import com.eatout.android.util.NetworkUtil
+import com.eatout.android.util.imgur.controller.GetImageController
 import com.eatout.android.util.zomato.beans.restaurant.search.SearchFilter
 import com.eatout.android.util.zomato.controller.*
 import com.eatout.android.util.zomato.events.GetCategoryCompletionEvent
 import com.eatout.android.util.zomato.events.LocationUpdateEvent
 import com.eatout.android.util.zomato.events.SearchRestaurantCompletionEvent
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
@@ -56,6 +62,25 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
             SearchRestaurantControllerOffline(this)
 
         _binding.toolbar3.title = ""
+        Log.v(TAG, FirebaseAuth.getInstance().currentUser!!.uid)
+
+        FirebaseDatabase.getInstance().reference
+                .child("users").child(FirebaseAuth.getInstance().currentUser!!.uid)
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onCancelled(p0: DatabaseError?) {
+                    }
+
+                    override fun onDataChange(p0: DataSnapshot?) {
+                        p0?.let {
+                            _binding.viewModel.name.set("${(it.value as HashMap<*, *>)["FirstName"]} ${(it.value as HashMap<*, *>)["LastName"]}")
+                            Glide.with(this@HomeActivity).load((it.value as HashMap<*, *>)["profileImageURL"]).into(_binding.profileImage)
+                        }
+                    }
+
+                })
+
+        GetImageController().getImage("")
+//        _binding.viewModel.name.set()
         setSupportActionBar(_binding.toolbar3)
         fetchCategories()
     }
@@ -174,7 +199,6 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
                     currentSelectedCategory = buttonView
                 }
 
-                val finalCategoryItem = categoryItem
                 buttonView.setOnClickListener({ view ->
 
                     if ((view as Button).text.toString() != currentSelectedCategory.text.toString()) {
@@ -188,7 +212,7 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
                         currentSelectedCategory = view
                     }
                     if (GPSUtil._latitude != 0.0) {
-                        val searchFilter = SearchFilter(latitude = GPSUtil._latitude, longitude = GPSUtil._longitude, category = arrayOf(finalCategoryItem._id))
+                        val searchFilter = SearchFilter(latitude = GPSUtil._latitude, longitude = GPSUtil._longitude, category = arrayOf(categoryItem._id))
                         Log.v(TAG, searchFilter.toString())
                         _searchRestaurantController.searchRestaurants(searchFilter)
                         _binding.viewModel.restaurantAVLoadingIndicatorViewVisibility.set(true)
