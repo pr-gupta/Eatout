@@ -11,6 +11,7 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.util.Log
+import android.widget.Toast
 import com.eatout.android.util.zomato.events.LocationUpdateEvent
 import org.greenrobot.eventbus.EventBus
 
@@ -42,6 +43,7 @@ class GPSUtil(private val _context:Context){
                 getGPSLocation()
             }
             else {
+                Toast.makeText(_context, "Please enable GPS location to proceed", Toast.LENGTH_LONG).show()
                 Log.w(TAG, "GPS Not Enabled")
             }
         }

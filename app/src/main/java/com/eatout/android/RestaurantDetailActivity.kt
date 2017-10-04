@@ -157,7 +157,6 @@ class RestaurantDetailActivity : Activity(), RestaurantDetailViewModel.Restauran
     }
 
     override fun onStop() {
-        EventBus.getDefault().unregister(this)
         super.onStop()
     }
 
