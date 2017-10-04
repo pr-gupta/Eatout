@@ -189,4 +189,5 @@
     <string name="keyword">keyword</string>
     <string name="filter">Filter</string>
     <string name="ride_with_uber">Ride with Uber</string>
+    <string name="profile">Profile</string>
 </resources>

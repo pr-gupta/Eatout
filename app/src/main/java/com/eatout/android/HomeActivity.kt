@@ -24,7 +24,6 @@ import com.eatout.android.fragment.RestaurantListFragment
 import com.eatout.android.model.view.HomeActivityViewModel
 import com.eatout.android.util.GPSUtil
 import com.eatout.android.util.NetworkUtil
-import com.eatout.android.util.imgur.controller.GetImageController
 import com.eatout.android.util.zomato.beans.restaurant.search.SearchFilter
 import com.eatout.android.util.zomato.controller.*
 import com.eatout.android.util.zomato.events.GetCategoryCompletionEvent
@@ -79,8 +78,6 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
 
                 })
 
-        GetImageController().getImage("")
-//        _binding.viewModel.name.set()
         setSupportActionBar(_binding.toolbar3)
         fetchCategories()
     }
@@ -154,6 +151,9 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
                     FirebaseAuth.getInstance().signOut()
                     startActivity(Intent(this, MainActivity::class.java))
                     finish()
+                }
+                R.id.home_action_profile -> {
+                    startActivity(Intent(this, ProfileActivity::class.java))
                 }
             }
         }
