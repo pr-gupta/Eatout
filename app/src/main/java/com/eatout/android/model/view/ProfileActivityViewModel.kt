@@ -16,6 +16,7 @@ class ProfileActivityViewModel(
         val lastName: ObservableField<String> = ObservableField(""),
         val profileImageURL: ObservableField<String> = ObservableField(""),
         val emailID: ObservableField<String> = ObservableField(""),
+        val isImageLoading: ObservableField<Boolean> = ObservableField(false),
         val context: Context
 ) {
 

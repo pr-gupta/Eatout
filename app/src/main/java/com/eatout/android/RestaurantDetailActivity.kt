@@ -137,14 +137,16 @@ class RestaurantDetailActivity : Activity(), RestaurantDetailViewModel.Restauran
                 val priceList = response!!.body()
                 _binding.viewModel.isUberDataLoaded.set(true)
                 var cnt = 0
-                loop@ for (price in priceList!!.prices) {
-                    cnt++
-                    when (cnt) {
-                        1 -> _binding.viewModel.UberRideDetails1.set("${price.displayName} : ${price.estimate}")
-                        2 -> _binding.viewModel.UberRideDetails2.set("${price.displayName} : ${price.estimate}")
-                        3 -> _binding.viewModel.UberRideDetails3.set("${price.displayName} : ${price.estimate}")
-                        4 -> _binding.viewModel.UberRideDetails4.set("${price.displayName} : ${price.estimate}")
-                        else -> break@loop
+                if (priceList != null) {
+                    loop@ for (price in priceList.prices) {
+                        cnt++
+                        when (cnt) {
+                            1 -> _binding.viewModel.UberRideDetails1.set("${price.displayName} : ${price.estimate}")
+                            2 -> _binding.viewModel.UberRideDetails2.set("${price.displayName} : ${price.estimate}")
+                            3 -> _binding.viewModel.UberRideDetails3.set("${price.displayName} : ${price.estimate}")
+                            4 -> _binding.viewModel.UberRideDetails4.set("${price.displayName} : ${price.estimate}")
+                            else -> break@loop
+                        }
                     }
                 }
             }

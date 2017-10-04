@@ -37,6 +37,7 @@ class ProfileActivity : Activity(), ProfileActivityViewModel.OnChangeListener {
     override fun updateProfileImage(src: String) {
         Log.v(TAG, src)
         Glide.with(applicationContext).load(src).asBitmap().centerCrop().into(_binding.profileImage2)
+        _binding.viewModel.isImageLoading.set(false)
     }
 
     override fun chooseImage() {
@@ -88,25 +89,30 @@ class ProfileActivity : Activity(), ProfileActivityViewModel.OnChangeListener {
 
     private val PICK_IMAGE = 1
 
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
-            val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, data.data)
-            val filename = File(Environment.getExternalStorageDirectory(), "imageName.jpg")
-            val out = FileOutputStream(filename)
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 60, out)
-            out.flush()
-            out.close()
+    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        data?.let {
+            if (requestCode == PICK_IMAGE && resultCode == RESULT_OK) {
+                val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, data.data)
+                val filename = File(Environment.getExternalStorageDirectory(), "imageName.jpg")
+                val out = FileOutputStream(filename)
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 60, out)
+                out.flush()
+                out.close()
 
-            val base64 = getStringImage(filename)
+                val base64 = getStringImage(filename)
 
-            Log.i(TAG, base64)
-            PostImageController({ imgUrl ->
-                FirebaseDatabase.getInstance().reference
-                        .child("users").child(FirebaseAuth.getInstance().currentUser!!.uid)
-                        .child("profileImageURL")
-                        .setValue(imgUrl)
+                Log.i(TAG, base64)
+                PostImageController({ imgUrl ->
+
+                    FirebaseDatabase.getInstance().reference
+                            .child("users").child(FirebaseAuth.getInstance().currentUser!!.uid)
+                            .child("profileImageURL")
+                            .setValue(imgUrl)
+                }
+                ).postImage(base64!!)
+
+                _binding.viewModel.isImageLoading.set(true)
             }
-            ).postImage(base64!!)
         }
     }
 

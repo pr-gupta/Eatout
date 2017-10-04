@@ -72,7 +72,7 @@ class HomeActivity : AppCompatActivity(), RestaurantListFragment.OnScrollDownToB
                     override fun onDataChange(p0: DataSnapshot?) {
                         p0?.let {
                             _binding.viewModel.name.set("${(it.value as HashMap<*, *>)["FirstName"]} ${(it.value as HashMap<*, *>)["LastName"]}")
-                            Glide.with(this@HomeActivity).load((it.value as HashMap<*, *>)["profileImageURL"]).into(_binding.profileImage)
+                            Glide.with(this@HomeActivity).load((it.value as HashMap<*, *>)["profileImageURL"]).centerCrop().into(_binding.profileImage)
                         }
                     }
 
