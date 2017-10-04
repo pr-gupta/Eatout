@@ -9,11 +9,11 @@ import com.google.gson.annotations.SerializedName
 data class ImageResult(
         @SerializedName("data")
         @Expose
-        private val data: Data,
+        val data: Data,
         @SerializedName("success")
         @Expose
-        private val success: Boolean,
+        val success: Boolean,
         @SerializedName("status")
         @Expose
-        private val status: Int
+        val status: Int
 )

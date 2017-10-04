@@ -51,8 +51,19 @@ class ProfileActivityViewModel(
         mListener.chooseImage()
     }
 
+    fun onClickUpdate() {
+        val ref = FirebaseDatabase.getInstance().reference
+                .child("users").child(FirebaseAuth.getInstance().currentUser!!.uid)
+
+        ref.child("FirstName").setValue(firstName.get())
+        ref.child("LastName").setValue(lastName.get())
+
+        mListener.finishActivity()
+    }
+
     interface OnChangeListener {
         fun updateProfileImage(src: String)
         fun chooseImage()
+        fun finishActivity()
     }
 }
