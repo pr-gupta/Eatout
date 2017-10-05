@@ -47,7 +47,7 @@ class HomeActivityViewModel(
         mListener = context
 
         Executors.newScheduledThreadPool(1).scheduleAtFixedRate({
-            Log.v(TAG, "ReP - ${System.currentTimeMillis()}, $lastTimeNoted, ${gpsAVLoadingIndicatorVisibility.get()}")
+
             if (((System.currentTimeMillis() - lastTimeNoted) / 1000) >= 10)
                 if (gpsAVLoadingIndicatorVisibility.get() == true) {
                     gpsAVLoadingIndicatorVisibility.set(false)
