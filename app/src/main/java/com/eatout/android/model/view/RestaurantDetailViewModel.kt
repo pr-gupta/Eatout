@@ -30,7 +30,7 @@ class RestaurantDetailViewModel(
 
     init {
         if (context !is RestaurantDetailViewModel.RestaurantDetailViewModelChangeListener)
-            throw throw RuntimeException(context.toString() + " must implement HomeActivityViewModelChangedListener")
+            throw throw RuntimeException(context.toString() + " must implement RestaurantDetailViewModelChangeListener")
         mListener = context
     }
 
